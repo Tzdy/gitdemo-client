@@ -62,68 +62,7 @@
                         </div>
                     </div>
                 </details>
-                <!-- loading -->
-                <h2 class="f4 mb-2 text-normal">
-                    Pinned
-                    <svg style="box-sizing: content-box; color: var(--color-icon-primary);" width="16" height="16"
-                        viewBox="0 0 16 16" fill="none" data-view-component="true"
-                        class="spinner pinned-items-spinner js-pinned-items-spinner v-align-text-bottom ml-1 anim-rotate">
-                        <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-opacity="0.25" stroke-width="2"
-                            vector-effect="non-scaling-stroke"></circle>
-                        <path d="M15 8a7.002 7.002 0 00-7-7" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
-                    </svg>
-                    <span class="ml-2 color-fg-muted f6 js-pinned-items-reorder-message" role="status"
-                        aria-live="polite" data-error-text="Something went wrong."
-                        data-success-text="Order updated."></span>
-                </h2>
-                <!-- overview Box -->
-                <ol class="d-flex flex-wrap list-style-none gutter-condensed mb-2">
-                    <li v-for="item in overviews" :key="item.name"
-                        class="mb-3 d-flex flex-content-stretch col-12 col-md-6 col-lg-6">
-                        <div class="Box d-flex p-3 width-full">
-                            <div class="width-full">
-                                <!-- overview card header -->
-                                <div class="d-flex width-full position-relative">
-                                    <div class="flex-1">
-                                        <BaseSvgIcon name="repository" :size="16" class="octicon mr-2 color-fg-muted" />
-                                        <NuxtLink class="mr-2 text-bold wb-break-word" :to="item.url">
-                                            <span class="repo" :title="item.name">{{ item.name }}</span>
-                                        </NuxtLink>
-                                        <span
-                                            class="Label Label--secondary v-align-middle mt-1 no-wrap Label--inline">{{
-                                                    item.type
-                                            }}</span>
-                                    </div>
-                                    <span class="pl-2" title="Drag to reorder">
-                                        <BaseSvgIcon name="drag" :size="16" class="octicon" />
-                                    </span>
-                                </div>
-
-                                <!-- overview card content -->
-                                <p class="color-fg-muted text-small mt-2 mb-0">
-                                    {{ item.content }}
-                                </p>
-                                <!-- overview card info -->
-                                <p class="mb-0 mt-2 f6 color-fg-muted">
-                                    <span class="d-inline-block mr-3">
-                                        <span class="repo-language-color mr-1" style="background-color: #f1e05a"></span>
-                                        <span>JavaScript</span>
-                                    </span>
-
-                                    <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted">
-                                        <BaseSvgIcon name="stars" :size="16" class="octicon" />
-                                        2
-                                    </NuxtLink>
-                                    <NuxtLink to="/Tzdy/Tsdy-module/network/members" class="ml-3 Link--muted">
-                                        <BaseSvgIcon name="fork" :size="16" class="octicon" />
-                                        1
-                                    </NuxtLink>
-                                </p>
-                            </div>
-                        </div>
-                    </li>
-                </ol>
+                <BaseOverviewPanel :overviews="overviews" />
             </div>
         </div>
         <div class="mt-4">
@@ -138,6 +77,8 @@
 </template>
 
 <script setup lang="ts">
+import { Overview } from '../base/OverviewPanel.vue';
+
 const repositories = reactive([
     {
         name: 'Blob',
@@ -215,26 +156,37 @@ function offDetailsHandler() {
     details.value.removeAttribute('open')
 }
 
-const overviews = reactive([
+const overviews = reactive<Overview[]>([
     {
         name: 'Tsdy-Module',
-        content: ' 通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件 ',
+        introduce: ' 通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件 ',
         url: '/Tsdy-Module',
         type: 'public',
+        language: 'JavaScript',
+        sortIndex: 2,
+        starsNum: 100,
+        forksNum: 3,
     },
     {
         name: 'Exist',
-        content: ' 通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件 ',
+        introduce: ' 通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件 ',
         url: '/Tsdy-Module',
         type: 'public',
+        language: 'JavaScript',
+        sortIndex: 1,
+        starsNum: 100,
+        forksNum: 3,
 
     },
     {
         name: 'weixin-clicnent',
-        content: ' 通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件 ',
+        introduce: ' 通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件 ',
         url: '/Tsdy-Module',
         type: 'public',
-
+        language: 'Vue',
+        sortIndex: 0,
+        starsNum: 10,
+        forksNum: 3,
     }
 ])
 </script>
@@ -270,15 +222,5 @@ const overviews = reactive([
 
 .pinned-item:hover {
     background-color: rgba(208, 215, 222, 0.32);
-}
-
-.repo-language-color {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border: 1px solid var(--color-primer-border-contrast);
-    border-radius: 50%;
 }
 </style>

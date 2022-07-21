@@ -17,7 +17,7 @@ onMounted(() => {
 })
 </script>
 <style lang="scss">
-@import '@primer/css/color-modes/index.scss';
+@import '@primer/css/color-modes/themes/light.scss';
 
 html,
 body {
