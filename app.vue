@@ -6,7 +6,7 @@ import 'virtual:svg-icons-register'
 import { useWindowEvent } from '~/store/index'
 onMounted(() => {
   const windowEvent = useWindowEvent()
-  Object.keys(windowEvent.$state).forEach((eventName: 'click' | 'resize') => {
+  Object.keys(windowEvent.$state).forEach((eventName: 'click' | 'resize' | 'mouseup') => {
     window.addEventListener(eventName, ev => {
       windowEvent.$state[eventName].forEach(func => {
         func(ev)
