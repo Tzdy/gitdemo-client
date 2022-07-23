@@ -3,6 +3,9 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path'
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
+  app: {
+    baseURL: '/gitdemo/'
+  },
   typescript: {
     shim: false,
   },
