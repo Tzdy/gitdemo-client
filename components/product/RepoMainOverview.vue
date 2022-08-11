@@ -22,7 +22,8 @@
                                 <!-- search -->
                                 <div class="d-flex flex-column flex-lg-row flex-auto position-relative">
                                     <div class="mb-1 mb-lg-0 mr-lg-1 flex-auto">
-                                        <input type="search" class="search-input form-control width-full"
+                                        <input v-model="searchText" type="search"
+                                            class="search-input form-control width-full"
                                             placeholder="Filter repositories" autocomplete="off" spellcheck="false">
                                         <BaseSvgIcon class="search-icon octicon" name="search" :size="16" />
                                     </div>
@@ -32,9 +33,10 @@
                             <div class="Box-body overflow-auto border-top">
                                 <div class="mb-3">
                                     <ul class="mb-2 list-style-none position-relative">
-                                        <li v-for="item in repositories" :key="item.name">
+                                        <li v-for="item in repositoriesSearchResult" :key="item.name">
                                             <label class="d-inline-block width-full pinned-item" title="Tsdy-module">
-                                                <input v-model="item.is_overview" type="checkbox"
+                                                <input :disabled="overviewDisabled && !item.is_overview"
+                                                    v-model="item.is_overview" type="checkbox"
                                                     class="f5 m-2 v-align-middle">
                                                 <BaseSvgIcon class="octicon v-align-middle" name="repository"
                                                     :size="16" />
@@ -53,7 +55,8 @@
                                 </div>
                             </div>
                             <div class="Box-footer text-right border-top-0">
-                                <span class="float-left text-small pt-3 lh-condensed-ultra color-fg-danger">0
+                                <span class="float-left text-small pt-3 lh-condensed-ultra color-fg-danger">{{ remaining
+                                }}
                                     remaining</span>
                                 <button type="submit" class="btn btn-primary">
                                     Save pins
@@ -151,6 +154,8 @@ const repositories = reactive([
         stars_num: 150,
     }
 ])
+const repositoriesSearchResult = ref(repositories)
+
 const details = ref<HTMLElement>(null)
 function offDetailsHandler() {
     details.value.removeAttribute('open')
@@ -189,6 +194,39 @@ const overviews = reactive<Overview[]>([
         forksNum: 3,
     }
 ])
+const remaining = ref(6)
+const overviewDisabled = ref(false)
+function calcRemaining() {
+    remaining.value = Object.values(repositories).reduce((a, b) => {
+        if (b.is_overview) {
+            return a === 0 ? 0 : a - 1
+        } else {
+            return a
+        }
+    }, 6)
+    if (remaining.value === 0) {
+        overviewDisabled.value = true
+    } else {
+        overviewDisabled.value = false
+    }
+}
+watch(repositories, () => {
+    calcRemaining()
+}, {
+    deep: true
+})
+
+const searchText = ref('')
+watch(searchText, () => {
+    repositoriesSearchResult.value = repositories.filter(item => {
+        if (item.name.includes(searchText.value)) {
+            return true
+        } else {
+            return false
+        }
+    })
+})
+
 </script>
 
 <style lang="scss" scoped>
