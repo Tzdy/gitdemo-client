@@ -41,11 +41,7 @@
                         </p>
                         <!-- overview card info -->
                         <p class="mb-0 mt-2 f6 color-fg-muted">
-                            <span class="d-inline-block mr-3">
-                                <span class="repo-language-color mr-1" v-show="languageColor[item.language]"
-                                    :style="{ backgroundColor: languageColor[item.language] }"></span>
-                                <span>{{ item.language }}</span>
-                            </span>
+                            <BaseLanguage class="d-inline-block mr-3" :language="item.language" />
 
                             <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted">
                                 <BaseSvgIcon name="stars" :size="16" class="octicon mr-1" />
@@ -87,11 +83,7 @@
                     </p>
                     <!-- overview card info -->
                     <p class="mb-0 mt-2 f6 color-fg-muted">
-                        <span class="d-inline-block mr-3">
-                            <span class="repo-language-color mr-1" v-show="languageColor[mobileDragItem.language]"
-                                :style="{ backgroundColor: languageColor[mobileDragItem.language] }"></span>
-                            <span>{{ mobileDragItem.language }}</span>
-                        </span>
+                        <BaseLanguage class="d-inline-block mr-3" :language="mobileDragItem.language" />
 
                         <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted">
                             <BaseSvgIcon name="stars" :size="16" class="octicon mr-1" />
@@ -169,16 +161,6 @@ function transitionendHandler() {
 
 const overviews = toRef(props, 'overviews')
 
-
-const languageColor: Record<string, string | undefined> = {
-    JavaScript: '#f1e05a',
-    HTML: '#e34c26',
-    TypeScript: '#3178c6',
-    Go: '#00ADD8',
-    Css: '#563d7c',
-    Vue: '#41b883',
-    PHP: '#4F5D95',
-}
 loading.value = false
 const overviewsList = ref([])
 
@@ -279,16 +261,6 @@ function touchEndHandler() {
 </script>
 
 <style scoped>
-.repo-language-color {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border: 1px solid var(--color-primer-border-contrast);
-    border-radius: 50%;
-}
-
 .mobile-drag-item {
     top: 0;
     left: 0;
