@@ -186,6 +186,9 @@
                     <div v-if="tabName === undefined">
                         <ProductRepoMainOverview />
                     </div>
+                    <div v-else-if="tabName === 'repositories'">
+                        repositories
+                    </div>
                 </div>
             </div>
         </div>
@@ -294,10 +297,32 @@ const userInfo = reactive({
 })
 const isEdit = ref(false)
 const tabName = ref(useRoute().query.tab)
+function switchTab(name: string | undefined) {
+    tabName.value = name
+    console.log(tabName.value)
+    navItems.forEach(item => {
+        if (item.name.toLowerCase() === tabName.value) {
+            item.selected = true
+        } else {
+            item.selected = false
+        }
+        if (item.name.toLowerCase() === 'overview') {
+            if (tabName.value === undefined) {
+                item.selected = true
+            }
+        }
+    })
+}
+if (typeof tabName.value === 'string') {
+
+    switchTab(tabName.value)
+}
 useRouter().afterEach((to, from) => {
+    console.log(to, from)
     if (to.path === from.path) {
-        tabName.value = to.query.tab
-        console.log(tabName.value)
+        if (typeof to.query.tab === 'string' || typeof to.query.tab === 'undefined') {
+            switchTab(to.query.tab)
+        }
     }
 })
 </script>
