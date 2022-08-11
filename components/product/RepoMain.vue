@@ -187,7 +187,7 @@
                         <ProductRepoMainOverview />
                     </div>
                     <div v-else-if="tabName === 'repositories'">
-                        repositories
+                        <ProductRepoMainRepository />
                     </div>
                 </div>
             </div>

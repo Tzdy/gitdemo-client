@@ -25,7 +25,7 @@ export default defineComponent({
         @import '@primer/css/timeline/index.scss';
         @import '@primer/css/toasts/index.scss';
         @import '@primer/css/toggle-switch/index.scss';
-
+        @import '@primer/css/select-menu/index.scss';
         @import '@primer/css/marketing/index.scss';
     }
 }
