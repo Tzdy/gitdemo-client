@@ -7,8 +7,7 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "@lewebsimple/nuxt3-svg": "^0.1.1",
-    "nuxt": "3.0.0-rc.4",
+    "nuxt": "3.0.0-rc.6",
     "sass": "^1.53.0",
     "vite-plugin-svg-icons": "^2.0.1"
   },
@@ -17,5 +16,21 @@
     "@pinia/nuxt": "^0.3.0",
     "@primer/css": "^20.2.4",
     "pinia": "^2.0.16"
+  },
+  "pnpm": {
+    "overrides": {
+      "nuxt": "3.0.0-rc.6",
+      "nuxi": "3.0.0-rc.6",
+      "@nuxt/vite-builder": "3.0.0-rc.6",
+      "@nuxt/kit": "3.0.0-rc.6",
+      "@nuxt/schema": "3.0.0-rc.6"
+    }
+  },
+  "overrides": {
+    "nuxt": "3.0.0-rc.6",
+    "nuxi": "3.0.0-rc.6",
+    "@nuxt/vite-builder": "3.0.0-rc.6",
+    "@nuxt/kit": "3.0.0-rc.6",
+    "@nuxt/schema": "3.0.0-rc.6"
   }
 }
