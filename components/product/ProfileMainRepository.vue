@@ -62,13 +62,7 @@
                     </div>
                 </div>
                 <div class="col-2 d-flex flex-column flex-justify-around flex-items-end ml-3">
-                    <button @click="onToggleStar(repo)" class="rounded-left-2 btn-sm btn">
-                        <BaseSvgIcon v-show="!repo.isStar" name="star" :size="16" class="octicon mr-2" />
-                        <BaseSvgIcon v-show="repo.isStar" name="star-fill" color="#eac54f" :size="16"
-                            class="octicon mr-2" />
-                        <span v-show="!repo.isStar">Star</span>
-                        <span v-show="repo.isStar">Starred</span>
-                    </button>
+                    <ShareStarToggleBtn :star="repo.isStar" @toggle="onToggleStar" />
                 </div>
 
             </li>
@@ -117,8 +111,7 @@ function onSelectSort(language: string) {
     console.log(language)
 }
 
-function onToggleStar(repo: RepoInfo) {
-    repo.isStar = !repo.isStar
+function onToggleStar(isStar: boolean) {
 }
 
 

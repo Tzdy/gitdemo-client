@@ -2,7 +2,7 @@
     <details class="dropdown details-reset details-overlay d-inline-block">
         <summary class="d-inline" aria-haspopup="true">
             <slot></slot>
-            <div class="dropdown-caret"></div>
+            <div class="dropdown-caret ml-1"></div>
         </summary>
 
         <ul class="dropdown-menu dropdown-menu-sw">

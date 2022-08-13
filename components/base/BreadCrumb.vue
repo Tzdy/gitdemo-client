@@ -31,4 +31,7 @@ defineProps({
 </script>
 
 <style scoped>
+.breadcrumb-item-selected strong a {
+    color: var(--color-accent-fg);
+}
 </style>
