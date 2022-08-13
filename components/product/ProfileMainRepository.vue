@@ -3,11 +3,11 @@
         <!-- header -->
         <div class="border-bottom color-border-muted py-3">
             <!-- mobile new repository btn -->
-            <a href="/new"
+            <NuxtLink to="/new"
                 class="d-md-none btn btn-primary d-flex flex-items-center flex-justify-center width-full mb-4">
                 <BaseSvgIcon class="octicon mr-1" name="repository" :size="16" />
                 New
-            </a>
+            </NuxtLink>
             <div class="d-flex flex-items-start">
                 <div class="d-flex flex-column flex-lg-row flex-auto width-full">
                     <div class="mb-1 mb-md-0 mr-md-3 flex-auto">
@@ -25,10 +25,10 @@
                 </div>
                 <!-- pc new repository btn -->
                 <div class="d-none d-md-flex flex-md-items-center flex-md-justify-end">
-                    <a href="/new" class="text-center btn btn-primary ml-3">
+                    <NuxtLink to="/new" class="text-center btn btn-primary ml-3">
                         <BaseSvgIcon class="octicon mr-1" name="repository" :size="16" />
                         New
-                    </a>
+                    </NuxtLink>
                 </div>
             </div>
         </div>
@@ -38,8 +38,8 @@
                 class="col-12 d-flex flex-justify-between width-full py-4 border-bottom color-border-muted">
                 <div class="col-10 col-lg-9 d-inline-block">
                     <h3 class="wb-break-all">
-                        <a href="/Tzdy/Tsdy-module" itemprop="name codeRepository">
-                            {{ repo.name }}</a>
+                        <NuxtLink :to="`/${username}/${repo.name}`" itemprop="name codeRepository">
+                            {{ repo.name }}</NuxtLink>
                         <span class="Label Label--secondary v-align-middle ml-1 mb-1">{{ repo.type }}</span>
                     </h3>
                     <p class="wb-break-all col-9 d-inline-block color-fg-muted mb-2 pr-4" itemprop="description">
@@ -90,7 +90,7 @@ interface RepoInfo {
     forkNum: number,
     isStar: boolean
 }
-
+const username = useRoute().params['username'] as string
 const selectType = reactive(['All', 'Public', 'Private'])
 const selectLanguage = reactive(['All', 'JavaScript', 'Css', 'TypeScript', 'C'])
 const selectSort = reactive(['Last updated', 'Name', 'Star'])

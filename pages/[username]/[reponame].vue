@@ -1,6 +1,7 @@
 <template>
     <main>
-        <!-- header -->
+        <ProductHeader avatar="https://www.tsdy.club/git/manage/user/info/avatar/Tsdy"></ProductHeader>
+        <!-- top header -->
         <div class="pt-3 hide-full-screen">
             <div class="d-flex flex-wrap flex-justify-end mb-3 px-3 px-md-4 px-lg-5">
                 <div class="flex-auto min-width-0 width-fit mr-3">
