@@ -169,8 +169,8 @@ const overviews = reactive<Overview[]>([
         type: 'public',
         language: 'JavaScript',
         sortIndex: 2,
-        starsNum: 100,
-        forksNum: 3,
+        starNum: 100,
+        forkNum: 3,
     },
     {
         name: 'Exist',
@@ -179,8 +179,8 @@ const overviews = reactive<Overview[]>([
         type: 'public',
         language: 'JavaScript',
         sortIndex: 1,
-        starsNum: 100,
-        forksNum: 3,
+        starNum: 100,
+        forkNum: 3,
 
     },
     {
@@ -190,8 +190,8 @@ const overviews = reactive<Overview[]>([
         type: 'public',
         language: 'Vue',
         sortIndex: 0,
-        starsNum: 10,
-        forksNum: 3,
+        starNum: 10,
+        forkNum: 3,
     }
 ])
 const remaining = ref(6)
