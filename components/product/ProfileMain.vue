@@ -184,10 +184,10 @@
                     </div>
                     <!-- main -->
                     <div v-if="tabName === undefined">
-                        <ProductRepoMainOverview />
+                        <ProductProfileMainOverview />
                     </div>
                     <div v-else-if="tabName === 'repositories'">
-                        <ProductRepoMainRepository />
+                        <ProductProfileMainRepository />
                     </div>
                 </div>
             </div>
