@@ -44,8 +44,8 @@
                             <BaseLanguage class="d-inline-block mr-3" :language="item.language" />
 
                             <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted">
-                                <BaseSvgIcon name="stars" :size="16" class="octicon mr-1" />
-                                <span>{{ item.starsNum }}</span>
+                                <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
+                                <span>{{ item.starNum }}</span>
                             </NuxtLink>
                             <NuxtLink to="/Tzdy/Tsdy-module/network/members" class="ml-3 Link--muted">
                                 <BaseSvgIcon name="fork" :size="16" class="octicon mr-1" />
@@ -86,8 +86,8 @@
                         <BaseLanguage class="d-inline-block mr-3" :language="mobileDragItem.language" />
 
                         <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted">
-                            <BaseSvgIcon name="stars" :size="16" class="octicon mr-1" />
-                            <span>{{ mobileDragItem.starsNum }}</span>
+                            <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
+                            <span>{{ mobileDragItem.starNum }}</span>
                         </NuxtLink>
                         <NuxtLink to="/Tzdy/Tsdy-module/network/members" class="ml-3 Link--muted">
                             <BaseSvgIcon name="fork" :size="16" class="octicon mr-1" />
@@ -110,8 +110,8 @@ export interface Overview {
     type: 'public' | 'private';
     language: string;
     sortIndex: number;
-    starsNum: number;
-    forksNum: number;
+    starNum: number;
+    forkNum: number;
 }
 
 const props = defineProps({
@@ -184,8 +184,8 @@ const mobileDragItem = ref<Overview>({
     type: 'public',
     language: '',
     sortIndex: 0,
-    starsNum: 0,
-    forksNum: 0
+    starNum: 0,
+    forkNum: 0
 })
 
 const mobileDragItemX = ref(0)

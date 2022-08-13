@@ -34,29 +34,41 @@
         </div>
         <!-- repository list -->
         <ul>
-            <li class="col-12 d-flex flex-justify-between width-full py-4 border-bottom color-border-muted">
+            <li v-for="repo in repoList" :key="repo.name"
+                class="col-12 d-flex flex-justify-between width-full py-4 border-bottom color-border-muted">
                 <div class="col-10 col-lg-9 d-inline-block">
                     <h3 class="wb-break-all">
                         <a href="/Tzdy/Tsdy-module" itemprop="name codeRepository">
-                            Tsdy-module</a>
-                        <span class="Label Label--secondary v-align-middle ml-1 mb-1">Public</span>
+                            {{ repo.name }}</a>
+                        <span class="Label Label--secondary v-align-middle ml-1 mb-1">{{ repo.type }}</span>
                     </h3>
-                    <p class="col-9 d-inline-block color-fg-muted mb-2 pr-4" itemprop="description">
-                        通过原生js，css完成的组件
+                    <p class="wb-break-all col-9 d-inline-block color-fg-muted mb-2 pr-4" itemprop="description">
+                        {{ repo.introduce }}
                     </p>
                     <div class="f6 color-fg-muted mt-2">
-                        <BaseLanguage class="d-inline-block mr-3" language="TypeScript" />
-                        <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted mr-3">
-                            <BaseSvgIcon name="stars" :size="16" class="octicon mr-1" />
-                            <span>{{ 12 }}</span>
+                        <BaseLanguage class="d-inline-block mr-3" :language="repo.language" />
+                        <NuxtLink v-show="repo.starNum" to="/Tzdy/Tsdy-module/stargazers"
+                            class="Link--muted mr-3 no-wrap">
+                            <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
+                            <span>{{ repo.starNum }}</span>
                         </NuxtLink>
-                        <NuxtLink to="/Tzdy/Tsdy-module/network/members" class="mr-3 Link--muted">
+                        <NuxtLink v-show="repo.forkNum" to="/Tzdy/Tsdy-module/network/members"
+                            class="mr-3 Link--muted no-wrap">
                             <BaseSvgIcon name="fork" :size="16" class="octicon mr-1" />
-                            <span>{{ 1 }}</span>
+                            <span>{{ repo.forkNum }}</span>
                         </NuxtLink>
                         <span class="mr-1">Updated</span>
-                        <span>on 5 Jul 2019</span>
+                        <span>{{ repoUpdatedTime(repo.updatedTime) }}</span>
                     </div>
+                </div>
+                <div class="col-2 d-flex flex-column flex-justify-around flex-items-end ml-3">
+                    <button @click="onToggleStar(repo)" class="rounded-left-2 btn-sm btn">
+                        <BaseSvgIcon v-show="!repo.isStar" name="star" :size="16" class="octicon mr-2" />
+                        <BaseSvgIcon v-show="repo.isStar" name="star-fill" color="#eac54f" :size="16"
+                            class="octicon mr-2" />
+                        <span v-show="!repo.isStar">Star</span>
+                        <span v-show="repo.isStar">Starred</span>
+                    </button>
                 </div>
 
             </li>
@@ -65,9 +77,36 @@
 </template>
 
 <script setup lang="ts">
+import { repoUpdatedTime } from '@/shared/timeFormat'
+
+interface RepoInfo {
+    _id: string,
+    name: string
+    type: 'Public' | 'Private',
+    introduce: string,
+    language: string,
+    updatedTime: string,
+    starNum: number,
+    forkNum: number,
+    isStar: boolean
+}
+
 const selectType = reactive(['All', 'Public', 'Private'])
 const selectLanguage = reactive(['All', 'JavaScript', 'Css', 'TypeScript', 'C'])
 const selectSort = reactive(['Last updated', 'Name', 'Star'])
+const repoList = reactive<RepoInfo[]>([
+    {
+        _id: 'dasdsadsa',
+        name: 'Tsdy-Module',
+        type: 'Public',
+        introduce: '通过原生js，css完成的组件',
+        language: 'TypeScript',
+        updatedTime: '2022-08-13T10:48:26.653Z',
+        starNum: 18,
+        forkNum: 9,
+        isStar: true,
+    }
+])
 function onSelectType(type: string) {
     console.log(type)
 }
@@ -77,6 +116,11 @@ function onSelectLanguage(language: string) {
 function onSelectSort(language: string) {
     console.log(language)
 }
+
+function onToggleStar(repo: RepoInfo) {
+    repo.isStar = !repo.isStar
+}
+
 
 </script>
 
