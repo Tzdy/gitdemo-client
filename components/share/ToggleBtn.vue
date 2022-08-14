@@ -1,25 +1,33 @@
 <template>
     <button @click="onToggle" class="rounded-left-2 btn-sm btn">
-        <BaseSvgIcon v-show="!isToggle" name="star" :size="16" class="octicon mr-2" />
-        <BaseSvgIcon v-show="isToggle" name="star-fill" color="#eac54f" :size="16" class="octicon mr-2" />
-        <span v-show="!isToggle">Star</span>
-        <span v-show="isToggle">Starred</span>
+        <BaseSvgIcon :name="icon" :size="16" class="octicon mr-2" />
+        <span v-show="!isToggle">{{ text }}</span>
+        <span v-show="isToggle">{{ toggleText }}</span>
         <span class="Counter" v-show="toggleNumber">{{ toggleNumber }}</span>
     </button>
 </template>
 
 <script setup lang="ts">
 const props = defineProps({
-    star: {
-        type: Boolean,
+    icon: {
+        type: String,
     },
-    starNum: {
-        type: [Number, undefined],
+    text: {
+        type: String,
+    },
+    toggleText: {
+        type: String,
+    },
+    isToggle: {
+        type: Boolean
+    },
+    toggleNum: {
+        type: [undefined, Number],
     }
 })
 const emit = defineEmits(['toggle'])
-const isToggle = ref(props.star)
-const toggleNumber = ref(props.starNum)
+const isToggle = ref(props.isToggle)
+const toggleNumber = ref(props.toggleNum)
 let running = false
 function onToggle() {
     if (running) {

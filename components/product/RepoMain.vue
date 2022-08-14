@@ -13,17 +13,12 @@
                 <!-- PC -->
                 <!-- pin watch fork star Btn -->
                 <div class="flex-shrink-0 d-none d-md-flex" style="gap: 8px">
-                    <button class="btn-sm btn">
-                        <BaseSvgIcon name="pin" :size="16" class="octicon mr-2" />
-                        <span>Pin</span>
-                    </button>
-                    <button class="btn-sm btn">
-                        <BaseSvgIcon name="eye" :size="16" class="octicon mr-2" />
-                        <span>Watch</span>
-                        <span class="Counter">1</span>
-                    </button>
-                    <button class="btn-sm btn">
-                        <BaseSvgIcon name="pin" :size="16" class="octicon mr-2" />
+                    <ShareToggleBtn icon="pin" @toggle="onTogglePin" :is-toggle="repoInfo.isOverview" text="Pin"
+                        toggle-text="Unpin" />
+                    <ShareToggleBtn icon="eye" @toggle="onToggleWatch" :is-toggle="repoInfo.isWatch" text="Watch"
+                        toggle-text="Unwatch" />
+                    <button @click="onFork" class="btn-sm btn">
+                        <BaseSvgIcon name="fork" :size="16" class="octicon mr-2" />
                         <span>Fork</span>
                         <span class="Counter">1</span>
                     </button>
@@ -53,8 +48,17 @@ const breadcrumbItems = reactive<BreadcrumbItem[]>([
 const repoInfo = ref({
     type: 'Public',
     isStar: false,
+    isWatch: false,
+    isOverview: false,
     starNum: 100,
 })
+function onTogglePin(val: boolean, done: Function, err: Function) {
+    setTimeout(() => {
+        done()
+    }, 1000)
+}
+function onToggleWatch() { }
+function onFork() { }
 function onToggleStar() { }
 </script>
 
