@@ -26,7 +26,23 @@
                 </div>
             </div>
             <!-- navBar -->
-            <BaseUnderlineNav :items="navItems" :selected-name="tabName" more-pos="center" />
+            <BaseUnderlineNav :items="navItems" :selected-name="tabName" />
+        </div>
+        <!-- main -->
+        <div class="clearfix container-xl px-3 px-md-4 px-lg-5 mt-4">
+            <div
+                class="Layout Layout--flowRow-until-md Layout--sidebarPosition-end Layout--sidebarPosition-flowRow-end">
+                <!-- left -->
+                <div class="Layout-main">
+                    <div class="file-navigation mb-3 d-flex flex-items-start">
+                        <BaseSelectBranchMenu :branch-list="repoInfo.branchList" :tag-list="repoInfo.tagList"
+                            :select-name="repoInfo.selectName" :select-type="repoInfo.selectType"
+                            :default-name="repoInfo.defaultName" :default-type="repoInfo.defaultType" />
+                    </div>
+                </div>
+                <!-- right -->
+                <div class="Layout-sidebar"></div>
+            </div>
         </div>
     </BaseContainer>
 </template>
@@ -54,6 +70,19 @@ const repoInfo = ref({
     isWatch: false,
     isOverview: false,
     starNum: 100,
+    branchList: [
+        'master',
+        'dev'
+    ],
+    tagList: [
+        'v1',
+        'v2',
+        'v3'
+    ],
+    selectType: 'branch' as 'branch' | 'tag',
+    selectName: 'master',
+    defaultName: 'master',
+    defaultType: 'branch' as 'branch' | 'tag',
 })
 function onTogglePin(val: boolean, done: Function, err: Function) {
     setTimeout(() => {
@@ -99,6 +128,7 @@ const navItems = reactive<UnderlineNavItem[]>([
         number: 0,
     },
 ])
+
 </script>
 
 <style scoped>
