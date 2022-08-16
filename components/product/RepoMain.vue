@@ -25,12 +25,15 @@
                     <ShareStarToggleBtn :star="repoInfo.isStar" :star-num="repoInfo.starNum" @toggle="onToggleStar" />
                 </div>
             </div>
+            <!-- navBar -->
+            <BaseUnderlineNav :items="navItems" :selected-name="tabName" more-pos="center" />
         </div>
     </BaseContainer>
 </template>
 
 <script setup lang="ts">
 import type { BreadcrumbItem } from '@/components/base/BreadCrumb.vue'
+import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
 const breadcrumbItems = reactive<BreadcrumbItem[]>([
     {
         name: 'Tsdy',
@@ -60,6 +63,42 @@ function onTogglePin(val: boolean, done: Function, err: Function) {
 function onToggleWatch() { }
 function onFork() { }
 function onToggleStar() { }
+
+// navbar
+function switchTab(tab: string[] | string | undefined) {
+    if (typeof tab === 'string') {
+        tabName.value = tab
+    } else if (typeof tab === 'undefined') {
+        tabName.value = 'code'
+    }
+}
+const tabName = ref('')
+switchTab(useRoute().query.tab)
+console.log(tabName.value)
+useRouter().afterEach((to, from) => {
+    if (to.path === from.path) {
+        switchTab(to.query.tab)
+    }
+})
+const navItems = reactive<UnderlineNavItem[]>([
+    {
+        name: 'Code',
+        url: `${useRoute().params.reponame as string}`,
+        icon: 'code',
+    },
+    {
+        name: 'Issues',
+        url: '?tab=issues',
+        icon: 'issue',
+        number: 18,
+    },
+    {
+        name: 'Pull Request',
+        url: '?tab=pull request',
+        icon: 'pullrequest',
+        number: 0,
+    },
+])
 </script>
 
 <style scoped>

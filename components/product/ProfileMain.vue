@@ -11,44 +11,7 @@
                     </div>
                     <div class="Layout-main">
                         <!-- 下划线导航 -->
-                        <div class="UnderlineNav width-full box-shadow-none overflow-md-x-hidden">
-                            <nav ref="navElement" class="UnderlineNav-body width-full p-responsive"
-                                aria-label="User profile">
-                                <!-- aria-current-value="false" 由于css中可以通过这个属性判断当前处于哪一个tab -->
-                                <!-- NuxtLink 处理aria-current-value的方法与css，实际情况不符合。所以直接强制为false -->
-                                <NuxtLink v-for="item in navItems" :key="item.name" aria-current-value="false"
-                                    :style="{ visibility: !item.visible ? 'hidden' : 'visible' }"
-                                    :class="{ selected: item.selected, }" class="UnderlineNav-item" :to="item.url">
-                                    <BaseSvgIcon :name="item.icon" class="octicon UnderlineNav-octicon" :size="16" />
-                                    {{ item.name }}
-                                    <span v-show="item.number" class="Counter">{{ item.number }}</span>
-                                </NuxtLink>
-                            </nav>
-                            <!-- 当屏幕变小后，补充显示。 -->
-                            <div class="position-absolute pr-3 pr-md-4 pr-lg-5 right-0 js-responsive-underlinenav-overflow"
-                                style="">
-                                <details :hidden="isNavItemsMore"
-                                    class="details-overlay details-reset position-relative">
-                                    <summary role="button">
-                                        <div class="UnderlineNav-item mr-0 border-0">
-                                            <BaseSvgIcon name="kebab" :size="16" class="octicon" />
-                                            <span class="sr-only">More</span>
-                                        </div>
-                                    </summary>
-                                    <div>
-                                        <div role="menu" class="dropdown-menu dropdown-menu-sw">
-                                            <ul>
-                                                <li v-for="item in navItems" :hidden="item.visible" :key="item.name">
-                                                    <NuxtLink class="dropdown-item" :to="item.url">{{ item.name }}
-                                                    </NuxtLink>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </details>
-                            </div>
-
-                        </div>
+                        <BaseUnderlineNav :items="navItems" :selected-name="tabName" more-pos="top" />
                     </div>
                 </div>
             </div>
@@ -171,19 +134,9 @@
                 </div>
                 <div class="Layout-main">
                     <!-- 移动端的navbar -->
-                    <div class="UnderlineNav d-block d-md-none position-sticky top-0 pl-3 ml-n3
-          mr-n3 pr-3 color-bg-default" style="z-index:3;">
-                        <nav class="UnderlineNav-body width-full p-responsive" data-pjax="">
-                            <NuxtLink aria-current-value="false" v-for="item in navItems" :key="item.name"
-                                :class="{ selected: item.selected, }" class="UnderlineNav-item" :to="item.url">
-                                <BaseSvgIcon :name="item.icon" class="octicon UnderlineNav-octicon" :size="16" />
-                                {{ item.name }}
-                                <span v-show="item.number" class="Counter">{{ item.number }}</span>
-                            </NuxtLink>
-                        </nav>
-                    </div>
+                    <BaseMobileUnderlineNav :items="navItems" :selected-name="tabName" />
                     <!-- main -->
-                    <div v-if="tabName === undefined">
+                    <div v-if="tabName === 'overview'">
                         <ProductProfileMainOverview />
                     </div>
                     <div v-else-if="tabName === 'repositories'">
@@ -196,93 +149,52 @@
 </template>
 
 <script setup lang="ts">
-import { useWindowEvent } from '~~/store';
-const navElement = ref<HTMLElement>(null)
-const navItems = reactive([
+import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
+function switchTab(tab: string[] | string | undefined) {
+    if (typeof tab === 'string') {
+        tabName.value = tab
+    } else if (typeof tab === 'undefined') {
+        tabName.value = 'overview'
+    }
+}
+const tabName = ref('')
+switchTab(useRoute().query.tab)
+useRouter().afterEach((to, from) => {
+    if (to.path === from.path) {
+        switchTab(to.query.tab)
+    }
+})
+const navItems = reactive<UnderlineNavItem[]>([
     {
         name: 'Overview',
-        url: '/Tsdy',
-        visible: true,
+        url: `${useRoute().params.username as string}`,
         icon: 'overview',
-        selected: true,
     },
     {
         name: 'Repositories',
-        url: '/Tsdy?tab=repositories',
-        visible: true,
+        url: '?tab=repositories',
         icon: 'repository',
-        selected: false,
         number: 18,
     },
     {
         name: 'Projects',
-        url: '/Tsdy?tab=projects',
-        visible: true,
+        url: '?tab=projects',
         icon: 'projects',
-        selected: false,
         number: 0,
     },
     {
         name: 'Packages',
-        url: '/Tsdy?tab=packages',
-        visible: true,
+        url: '?tab=packages',
         icon: 'packages',
-        selected: false,
         number: 0
     },
     {
         name: 'Stars',
-        url: '/Tsdy?tab=stars',
-        visible: true,
-        icon: 'stars',
-        selected: false,
+        url: '?tab=stars',
+        icon: 'star',
         number: 0,
     },
 ])
-const isNavItemsMore = computed(() => {
-    return navItems.every(item => item.visible)
-})
-
-onMounted(() => {
-    const parntElement = navElement.value
-    const children = Array.from(navElement.value.children)
-    const childPadding = parseInt((children[0] && getComputedStyle(children[0]).paddingLeft), 0) * 2 || 0
-    const windowEvent = useWindowEvent(usePinia())
-    let originWidth = parntElement.offsetWidth
-    // attribute的hidden相当于display: none.
-    // 这里需要使用visibility: hidden，站位但不显示。
-    function navItemsResize(init?: boolean) {
-        const parentWidth = parntElement.offsetWidth
-        let subTotalWidth = 0
-        if (init) {
-            children.forEach((ele: HTMLElement, index) => {
-                subTotalWidth += (ele.offsetWidth + childPadding)
-                if (subTotalWidth > parentWidth) {
-                    navItems[index].visible = false
-                }
-            })
-        } else {
-            if (parentWidth > originWidth) {
-                children.forEach((ele: HTMLElement, index) => {
-                    subTotalWidth += (ele.offsetWidth + childPadding)
-                    if (subTotalWidth < parentWidth) {
-                        navItems[index].visible = true
-                    }
-                })
-            } else {
-                children.forEach((ele: HTMLElement, index) => {
-                    subTotalWidth += (ele.offsetWidth + childPadding)
-                    if (subTotalWidth > parentWidth) {
-                        navItems[index].visible = false
-                    }
-                })
-            }
-        }
-        originWidth = parentWidth
-    }
-    navItemsResize(true)
-    windowEvent.addEventListener('resize', () => navItemsResize())
-})
 
 
 // main
@@ -296,35 +208,8 @@ const userInfo = reactive({
     twitter: 'Tsdy',
 })
 const isEdit = ref(false)
-const tabName = ref(useRoute().query.tab)
-function switchTab(name: string | undefined) {
-    tabName.value = name
-    console.log(tabName.value)
-    navItems.forEach(item => {
-        if (item.name.toLowerCase() === tabName.value) {
-            item.selected = true
-        } else {
-            item.selected = false
-        }
-        if (item.name.toLowerCase() === 'overview') {
-            if (tabName.value === undefined) {
-                item.selected = true
-            }
-        }
-    })
-}
-if (typeof tabName.value === 'string') {
 
-    switchTab(tabName.value)
-}
-useRouter().afterEach((to, from) => {
-    console.log(to, from)
-    if (to.path === from.path) {
-        if (typeof to.query.tab === 'string' || typeof to.query.tab === 'undefined') {
-            switchTab(to.query.tab)
-        }
-    }
-})
+
 </script>
 
 <style scoped>
