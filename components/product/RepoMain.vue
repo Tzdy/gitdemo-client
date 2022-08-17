@@ -38,6 +38,25 @@
                         <BaseSelectBranchMenu :branch-list="repoInfo.branchList" :tag-list="repoInfo.tagList"
                             :select-name="repoInfo.selectName" :select-type="repoInfo.selectType"
                             :default-name="repoInfo.defaultName" :default-type="repoInfo.defaultType" />
+                        <div
+                            class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
+                            <NuxtLink :to="`${useRoute().params.reponame}/branches`" class="Link--primary no-underline">
+                                <BaseSvgIcon name="branch" :size="16" class="octicon mr-1" />
+                                <strong class="mr-1">{{ repoInfo.branchList.length }}</strong>
+                                <span class="color-fg-muted">branches</span>
+                            </NuxtLink>
+                        </div>
+                        <div
+                            class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
+                            <NuxtLink :to="`${useRoute().params.reponame}/tags`" class="Link--primary no-underline">
+                                <BaseSvgIcon name="tag" :size="16" class="octicon mr-1" />
+                                <strong class="mr-1">{{ repoInfo.tagList.length }}</strong>
+                                <span class="color-fg-muted">tags</span>
+                            </NuxtLink>
+                        </div>
+                        <div class="flex-auto"></div>
+
+                        <BaseSelectCloneMenu :https-url="repoInfo.httpsUrl" :ssh-url="repoInfo.sshUrl" />
                     </div>
                 </div>
                 <!-- right -->
@@ -66,6 +85,8 @@ const breadcrumbItems = reactive<BreadcrumbItem[]>([
 ])
 const repoInfo = ref({
     type: 'Public',
+    httpsUrl: 'https://github.com/swc-project/website.git',
+    sshUrl: 'git@github.com:swc-project/website.git',
     isStar: false,
     isWatch: false,
     isOverview: false,

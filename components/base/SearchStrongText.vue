@@ -73,7 +73,7 @@ function strongStyle(pos: 'left' | 'middle' | 'right') {
             // 正常状态
         } else {
             return {
-                color: 'inherit'
+                color: 'inherit '
             }
         }
     }
