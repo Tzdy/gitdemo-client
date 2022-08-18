@@ -34,13 +34,14 @@
                 class="Layout Layout--flowRow-until-md Layout--sidebarPosition-end Layout--sidebarPosition-flowRow-end">
                 <!-- left -->
                 <div class="Layout-main">
+                    <!-- select branch, clone repo -->
                     <div class="file-navigation mb-3 d-flex flex-items-start">
                         <BaseSelectBranchMenu :branch-list="repoInfo.branchList" :tag-list="repoInfo.tagList"
                             :select-name="repoInfo.selectName" :select-type="repoInfo.selectType"
                             :default-name="repoInfo.defaultName" :default-type="repoInfo.defaultType" />
                         <div
                             class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
-                            <NuxtLink :to="`${useRoute().params.reponame}/branches`" class="Link--primary no-underline">
+                            <NuxtLink :to="join(useRoute().path, 'branches')" class="Link--primary no-underline">
                                 <BaseSvgIcon name="branch" :size="16" class="octicon mr-1" />
                                 <strong class="mr-1">{{ repoInfo.branchList.length }}</strong>
                                 <span class="color-fg-muted">branches</span>
@@ -48,7 +49,7 @@
                         </div>
                         <div
                             class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
-                            <NuxtLink :to="`${useRoute().params.reponame}/tags`" class="Link--primary no-underline">
+                            <NuxtLink :to="join(useRoute().path, 'tags')" class="Link--primary no-underline">
                                 <BaseSvgIcon name="tag" :size="16" class="octicon mr-1" />
                                 <strong class="mr-1">{{ repoInfo.tagList.length }}</strong>
                                 <span class="color-fg-muted">tags</span>
@@ -58,6 +59,11 @@
 
                         <BaseSelectCloneMenu :https-url="repoInfo.httpsUrl" :ssh-url="repoInfo.sshUrl" />
                     </div>
+                    <!-- repo list -->
+                    <BaseDirectory :branch="repoInfo.branch" :directories="directory"
+                        :latest-commit="repoInfo.latestCommit" :commit-num="repoInfo.commitNum"
+                        :reponame="useRoute().params.reponame + ''" :username="useRoute().params.username + ''"
+                        :path="useRoute().params.path" />
                 </div>
                 <!-- right -->
                 <div class="Layout-sidebar"></div>
@@ -69,6 +75,7 @@
 <script setup lang="ts">
 import type { BreadcrumbItem } from '@/components/base/BreadCrumb.vue'
 import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
+import { join } from '@/shared/path'
 const breadcrumbItems = reactive<BreadcrumbItem[]>([
     {
         name: 'Tsdy',
@@ -84,6 +91,7 @@ const breadcrumbItems = reactive<BreadcrumbItem[]>([
     }
 ])
 const repoInfo = ref({
+    branch: 'master',
     type: 'Public',
     httpsUrl: 'https://github.com/swc-project/website.git',
     sshUrl: 'git@github.com:swc-project/website.git',
@@ -104,6 +112,14 @@ const repoInfo = ref({
     selectName: 'master',
     defaultName: 'master',
     defaultType: 'branch' as 'branch' | 'tag',
+    latestCommit: {
+        username: 'Tsdy',
+        avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy',
+        content: 'docs: make wording slightly clearer ',
+        hash: '9ef270915996195f40def244a33845449f67dbe9',
+        date: '2 hours ago'
+    },
+    commitNum: 2003,
 })
 function onTogglePin(val: boolean, done: Function, err: Function) {
     setTimeout(() => {
@@ -148,6 +164,21 @@ const navItems = reactive<UnderlineNavItem[]>([
         icon: 'pullrequest',
         number: 0,
     },
+])
+
+const directory = reactive([
+    {
+        type: 'tree' as 'tree' | 'blob',
+        name: 'src',
+        time: '16 days ago',
+        latestCommitContent: 'chore: add feature request template ('
+    },
+    {
+        type: 'blob' as 'tree' | 'blob',
+        name: '.gitignore',
+        time: '24 days ago',
+        latestCommitContent: 'chore: request template ('
+    }
 ])
 
 </script>
