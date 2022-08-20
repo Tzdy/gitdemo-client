@@ -22,7 +22,7 @@ const props = defineProps({
         type: Boolean
     },
     toggleNum: {
-        type: [undefined, Number],
+        type: [Number],
     }
 })
 const emit = defineEmits(['toggle'])
