@@ -1,7 +1,7 @@
 <template>
     <main>
         <ProductHeader avatar="https://www.tsdy.club/git/manage/user/info/avatar/Tsdy"></ProductHeader>
-        <ProductRepoMain />
+        <ProductRepo />
     </main>
 </template>
 
