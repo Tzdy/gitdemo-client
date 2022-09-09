@@ -22,13 +22,14 @@
                 </NuxtLink>
             </div>
             <div
-                class="Header-item overflow-auto Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mt-3 mt-md-0 d-md-flex">
+                class="Header-item overflow-hidden Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mt-3 mt-md-0 d-md-flex">
                 <!-- search -->
                 <div @click.stop="searchBoxState = true"
                     :class="searchBoxState ? 'header-search-md-block' : 'header-search-md-common'"
                     class="Header-search header-md-search flex-shrink-1 flex-grow-0 flex-auto position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3">
                     <form class="width-full header-search-input-wrap">
-                        <BaseInput class="f5 Header-input header-search-input" size="block" placeholder="Search or jump to..." />
+                        <BaseInput class="f5 Header-input header-search-input" size="block"
+                            placeholder="Search or jump to..." />
                     </form>
                 </div>
                 <nav class="d-flex flex-self-stretch flex-md-self-auto flex-column flex-md-row">
@@ -81,10 +82,12 @@ onMounted(() => {
 
 <style scoped lang="scss">
 @import "@primer/css/support/index.scss";
+
 .header-search-input-wrap {
     border: 1px #57606a solid;
     border-radius: 6px;
 }
+
 .header-search-input {
     display: table-cell;
     width: 100%;
@@ -97,6 +100,7 @@ onMounted(() => {
     box-shadow: none;
     min-height: 28px;
 }
+
 @media screen and (min-width: $width-md) {
     .header-search-md-block {
         width: 542px;
