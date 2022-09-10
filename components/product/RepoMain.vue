@@ -33,6 +33,8 @@
                 <BaseDirectory :branch="repoInfo.branch" :directories="directory" :latest-commit="repoInfo.latestCommit"
                     :commit-num="repoInfo.commitNum" :reponame="useRoute().params.reponame + ''"
                     :username="useRoute().params.username + ''" :path="(useRoute().params.path as string[])" />
+                <!-- README -->
+                <BaseMarkdown />
             </div>
             <!-- right -->
             <div class="Layout-sidebar">

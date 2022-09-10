@@ -28,11 +28,14 @@
         <BaseDirectory :branch="repoInfo.branch" :directories="directory" :latest-commit="repoInfo.latestCommit"
             :commit-num="repoInfo.commitNum" :reponame="useRoute().params.reponame + ''"
             :username="useRoute().params.username + ''" :path="(useRoute().params.path as string[])" />
+        <!-- README -->
+        <BaseMarkdown />
     </div>
 </template>
 
 <script setup lang="ts">
 import { join } from '@/shared/path'
+
 const repoInfo = ref({
     branch: 'master',
     type: 'Public',
@@ -125,4 +128,7 @@ const directory = reactive([
 </script>
 
 <style scoped>
+.SelectMenu-list--borderless>.SelectMenu-item {
+    border-bottom: 0;
+}
 </style>

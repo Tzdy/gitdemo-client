@@ -29,6 +29,7 @@ export default defineComponent({
         @import '@primer/css/marketing/index.scss';
         @import '@primer/css/breadcrumb/index.scss';
         @import '@primer/css/progress/index.scss';
+        @import '@primer/css/markdown/index.scss';
     }
 }
 </style>
