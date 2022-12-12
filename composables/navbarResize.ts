@@ -10,7 +10,7 @@ export function useNavbarResize(
   const childPadding =
     parseInt(children[0] && getComputedStyle(children[0]).paddingLeft, 0) * 2 ||
     0;
-  const windowEvent = useWindowEvent(usePinia());
+  const windowEvent = useWindowEvent();
   let originWidth = parntElement.offsetWidth;
   // attribute的hidden相当于display: none.
   // 这里需要使用visibility: hidden，站位但不显示。

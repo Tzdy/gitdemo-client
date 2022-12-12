@@ -73,7 +73,7 @@ const searchBoxState = ref(false)
 const avatarDropdownItems = [{ name: 'profile', url: '/profile' }, [{ name: 'Upgrade', url: '/upgrade' }]]
 const plusDropdownItems = [{ name: 'New repository', url: '/new' }]
 onMounted(() => {
-    const windowEvent = useWindowEvent(usePinia())
+    const windowEvent = useWindowEvent()
     windowEvent.addEventListener('click', e => {
         searchBoxState.value = false;
     })
