@@ -1,4 +1,3 @@
-import { defineNuxtConfig } from "nuxt";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import path from "path";
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
