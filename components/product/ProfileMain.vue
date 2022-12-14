@@ -150,6 +150,11 @@
 
 <script setup lang="ts">
 import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
+import { useAuth } from '~~/store/auth';
+
+const authStore = useAuth()
+console.log(authStore.info)
+
 function switchTab(tab: string[] | string | undefined) {
     if (typeof tab === 'string') {
         tabName.value = tab
@@ -213,4 +218,5 @@ const isEdit = ref(false)
 </script>
 
 <style scoped>
+
 </style>

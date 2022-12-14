@@ -1,5 +1,6 @@
 <template>
-    <input class="form-control" :class="classProperty" :disabled="disabled" :type="type" :placeholder="placeholder" />
+    <input class="form-control" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)"
+        :class="classProperty" :disabled="disabled" :type="type" :placeholder="placeholder" />
 </template>
 
 <script lang="ts">
@@ -22,9 +23,15 @@ export default defineComponent({
         },
         disabled: {
             type: Boolean,
+        },
+        modelValue: {
+            type: String
         }
     },
-    setup(props) {
+    emits: [
+        'update:modelValue'
+    ],
+    setup(props, { emit }) {
         const classProperty = computed(() => {
             const res: string[] = []
             switch (props.size) {
@@ -43,7 +50,6 @@ export default defineComponent({
             }
             return res
         })
-
         return {
             classProperty,
         }

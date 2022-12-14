@@ -1,9 +1,3 @@
 <template>
-    <ProductLoginForm action="/session" />
+    <ProductLoginForm />
 </template>
-
-<script lang="ts" setup>
-    definePageMeta({
-        middleware: ['auth']
-    })
-</script>

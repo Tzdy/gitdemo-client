@@ -1,5 +1,5 @@
 <template>
-    <button class="btn" :class="classProperty" type="submit" aria-label="Copy to clipboard">
+    <button class="btn" :class="classProperty" type="button" aria-label="Copy to clipboard">
         <slot></slot>
     </button>
 </template>
@@ -46,4 +46,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 </style>
