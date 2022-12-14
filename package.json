@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@nuxtjs/composition-api": "^0.33.0",
-    "@pinia/nuxt": "^0.3.0",
+    "@pinia/nuxt": "^0.4.2",
     "@primer/css": "^20.2.4",
     "markdown-it": "^13.0.1",
     "pinia": "^2.0.16"
