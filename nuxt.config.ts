@@ -5,6 +5,11 @@ export default defineNuxtConfig({
   app: {
     baseURL: "/gitdemo/",
   },
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || "/api",
+    },
+  },
   typescript: {
     shim: false,
   },

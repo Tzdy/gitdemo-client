@@ -1,7 +1,8 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   try {
-    const res = await $fetch("http://localhost:20000/api/auth/info", {
+    const res = await $fetch("/auth/info", {
+      baseURL: useRuntimeConfig().public.apiBase,
       method: "post",
       headers: {
         authorization: body.token,
