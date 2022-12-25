@@ -30,17 +30,18 @@
                                     class="position-relative d-inline-block col-2 col-md-12 mr-3 mr-md-0 flex-shrink-0">
                                     <NuxtLink to="/Tsdy/info" aria-label="change your avatar."
                                         class="tooltipped tooltipped-s d-block">
-                                        <img class="avatar circle width-full border color-bg-default" :src="avatar"
-                                            alt="">
+                                        <img width="1" height="1" style="height: auto;"
+                                            class="avatar circle width-full border color-bg-default"
+                                            :src="userInfo.avatar" alt="">
                                     </NuxtLink>
                                 </div>
                                 <div class="float-left col-12 py-3">
                                     <h1>
                                         <span class="f2 d-block overflow-hidden">
-                                            Tsdy
+                                            {{ userInfo.username }}
                                         </span>
                                         <span class="f3 text-light d-block color-fg-muted">
-                                            Tzdy
+                                            {{ userInfo.nickname }}
                                         </span>
                                     </h1>
                                 </div>
@@ -50,7 +51,7 @@
                                 <BaseForm :hidden="!isEdit" :data="userInfo" lass="position-relative flex-auto">
                                     <div class="mb-2">
                                         <label class="f5 d-block mb-1">Name</label>
-                                        <input v-model="userInfo.name" class="width-full form-control"
+                                        <input v-model="userInfo.nickname" class="width-full form-control"
                                             placeholder="Name">
                                     </div>
                                     <div>
@@ -69,7 +70,7 @@
                                     </div>
                                     <div class="color-fg-muted mt-2 d-flex flex-items-center">
                                         <BaseSvgIcon class="octicon" name="position" :size="16" />
-                                        <input class="ml-2 form-control flex-auto input-sm" v-model="userInfo.position"
+                                        <input class="ml-2 form-control flex-auto input-sm" v-model="userInfo.address"
                                             placeholder="Position">
                                     </div>
                                     <div class="color-fg-muted mt-2 d-flex flex-items-center">
@@ -106,11 +107,11 @@
                                                 {{ userInfo.organization }}
                                             </span>
                                         </li>
-                                        <li v-show="userInfo.position" class="width-full pt-1 hide-sm hide-md">
+                                        <li v-show="userInfo.address" class="width-full pt-1 hide-sm hide-md">
                                             <BaseSvgIcon class="octicon mr-2 color-fg-muted" name="position"
                                                 :size="16" />
                                             <span>
-                                                {{ userInfo.position }}
+                                                {{ userInfo.address }}
                                             </span>
                                         </li>
                                         <li v-show="userInfo.link" class="width-full pt-1 hide-sm hide-md">
@@ -150,10 +151,20 @@
 
 <script setup lang="ts">
 import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
-import { useAuth } from '~~/store/auth';
+import { getOtherInfo } from '~~/api/auth';
+const username = useRoute().params.username as string
+async function fetchUserInfo() {
+    const { data, errMessage } = await getOtherInfo(username)
+    if (!errMessage) {
+        return data
+    }
+}
 
-const authStore = useAuth()
-console.log(authStore.info)
+const userInfo = (await useAsyncData(async () => {
+    return await fetchUserInfo()
+})).data.value.info
+
+
 
 function switchTab(tab: string[] | string | undefined) {
     if (typeof tab === 'string') {
@@ -201,17 +212,16 @@ const navItems = reactive<UnderlineNavItem[]>([
     },
 ])
 
-
 // main
-const avatar = ref('https://www.tsdy.club/git/manage/user/info/avatar/Tsdy')
-const userInfo = reactive({
-    name: 'Tsdy',
-    bio: 'developing',
-    organization: '无',
-    position: '天津',
-    link: 'http://www.html.com',
-    twitter: 'Tsdy',
-})
+// const avatar = ref('https://www.tsdy.club/git/manage/user/info/avatar/Tsdy')
+// const userInfo = reactive({
+//     name: 'Tsdy',
+//     bio: 'developing',
+//     organization: '无',
+//     position: '天津',
+//     link: 'http://www.html.com',
+//     twitter: 'Tsdy',
+// })
 const isEdit = ref(false)
 
 

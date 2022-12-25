@@ -23,3 +23,15 @@ export function getInfo() {
     })
   );
 }
+
+export function getOtherInfo(username: string) {
+  const token = useCookie("token");
+  return clientRequest(() =>
+    useFetch("/api/otherInfo", {
+      method: "post",
+      body: {
+        username,
+      },
+    })
+  );
+}

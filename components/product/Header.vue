@@ -41,20 +41,20 @@
                         Issues</NuxtLink>
                 </nav>
             </div>
-            <div class="Header-item mr-0 mr-md-3 flex-order-1 flex-md-order-none">
+            <div v-if="userInfo" class="Header-item mr-0 mr-md-3 flex-order-1 flex-md-order-none">
                 <NuxtLink to="/notify" aria-label="You have no unread notifications"
                     class="Header-link notification-indicator position-relative tooltipped tooltipped-sw">
                     <BaseSvgIcon class="octicon" :size="16" name="notify" />
                 </NuxtLink>
             </div>
-            <div class="Header-item ml-auto d-none d-md-flex">
+            <div v-if="userInfo" class="Header-item ml-auto d-none d-md-flex">
                 <BaseDropDown :data="plusDropdownItems" class="Header-link">
                     <BaseSvgIcon class="mr-1 octicon v-align-middle" :size="16" name="plus" />
                 </BaseDropDown>
             </div>
             <div class="Header-item mr-0 ml-auto d-none d-md-flex">
-                <BaseDropDown class="Header-link" v-if="avatar" :data="avatarDropdownItems">
-                    <img class="avatar circle" height="20" alt="@octocat" :src="avatar" width="20" />
+                <BaseDropDown class="Header-link" v-if="userInfo" :data="avatarDropdownItems">
+                    <img class="avatar circle" height="20" alt="@octocat" :src="userInfo.avatar" width="20" />
                 </BaseDropDown>
                 <NuxtLink v-else class="Header-link f4 text-bold" to="/login">SIGN IN</NuxtLink>
             </div>
@@ -64,11 +64,13 @@
 
 <script setup lang="ts">
 import { useWindowEvent } from '~~/store';
-defineProps({
-    avatar: {
-        type: String,
-    },
+import { useAuth } from '~~/store/auth';
+const authStore = useAuth()
+
+const userInfo = computed(() => {
+    return authStore.info
 })
+
 const searchBoxState = ref(false)
 const avatarDropdownItems = [{ name: 'profile', url: '/profile' }, [{ name: 'Upgrade', url: '/upgrade' }]]
 const plusDropdownItems = [{ name: 'New repository', url: '/new' }]

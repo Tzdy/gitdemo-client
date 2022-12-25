@@ -1,6 +1,6 @@
 <template>
     <main>
-        <ProductHeader avatar="https://www.tsdy.club/git/manage/user/info/avatar/Tsdy"></ProductHeader>
+        <ProductHeader />
         <ProductProfileMain />
     </main>
 </template>
@@ -12,4 +12,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 </style>

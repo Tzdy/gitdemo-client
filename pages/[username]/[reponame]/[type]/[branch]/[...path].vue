@@ -1,6 +1,6 @@
 <template>
     <main>
-        <ProductHeader avatar="https://www.tsdy.club/git/manage/user/info/avatar/Tsdy"></ProductHeader>
+        <ProductHeader />
         <ProductRepo />
     </main>
 </template>
@@ -10,4 +10,5 @@
 </script>
 
 <style scoped>
+
 </style>
