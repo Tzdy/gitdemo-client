@@ -1,12 +1,10 @@
+import request from "~~/shared/request";
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const res = await $fetch("/auth/login", {
-    baseURL: useRuntimeConfig().public.apiBase,
+  return await request({
+    url: "/auth/login",
     method: "post",
-    body,
-    headers: {
-      "content-type": "application/json",
-    },
+    data: body,
   });
-  return res;
 });
