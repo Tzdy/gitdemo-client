@@ -2,7 +2,7 @@ export default async function clientRequest(callback: () => Promise<any>) {
   const { data, error } = await callback();
   let errMessage: string = "";
   if (error.value) {
-    const response = error.value.data.data;
+    const response = error.value.data;
     if (error.value.statusCode === 400) {
       errMessage = response.data
         .map((item) => Object.values(item.constraints).join(","))

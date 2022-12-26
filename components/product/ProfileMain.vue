@@ -28,12 +28,12 @@
                             <div class="clearfix d-flex d-md-block flex-items-center mb-4 mb-md-0">
                                 <div style="z-Index: 4;"
                                     class="position-relative d-inline-block col-2 col-md-12 mr-3 mr-md-0 flex-shrink-0">
-                                    <NuxtLink to="/Tsdy/info" aria-label="change your avatar."
-                                        class="tooltipped tooltipped-s d-block">
-                                        <img width="1" height="1" style="height: auto;"
-                                            class="avatar circle width-full border color-bg-default"
-                                            :src="userInfo.avatar" alt="">
-                                    </NuxtLink>
+                                    <div @click="onUploadAvatar" to="/Tsdy/info" aria-label="change your avatar."
+                                        class="d-block" style="padding-bottom: 100%;"
+                                        :class="{ 'tooltipped': isMyself, 'tooltipped-s': isMyself }">
+                                        <img class="position-absolute avatar circle width-full height-full border color-bg-default"
+                                            :src="avatarUrl" alt="">
+                                    </div>
                                 </div>
                                 <div class="float-left col-12 py-3">
                                     <h1>
@@ -48,7 +48,7 @@
                             </div>
                             <!-- 个人信息展示和修改 -->
                             <div class="d-flex flex-column">
-                                <BaseForm :hidden="!isEdit" :data="userInfo" lass="position-relative flex-auto">
+                                <BaseForm :hidden="!isEdit" :data="userInfo" class="position-relative flex-auto">
                                     <div class="mb-2">
                                         <label class="f5 d-block mb-1">Name</label>
                                         <input v-model="userInfo.nickname" class="width-full form-control"
@@ -90,7 +90,7 @@
                                         <button @click="isEdit = false" type="reset" class="btn-sm btn">Cancel</button>
                                     </div>
                                 </BaseForm>
-                                <div :hidden="isEdit" class="flex-column d-md-block">
+                                <div :hidden="isEdit || !isMyself" class="flex-column d-md-block">
                                     <div class="mb-3 f4">
                                         <div>{{ userInfo.bio }}</div>
                                     </div>
@@ -116,9 +116,8 @@
                                         </li>
                                         <li v-show="userInfo.link" class="width-full pt-1 hide-sm hide-md">
                                             <BaseSvgIcon class="octicon mr-2 color-fg-muted" name="link" :size="16" />
-                                            <NuxtLink class="Link--primary" target="_blink" :to="userInfo.link">{{
-                                                    userInfo.link
-                                            }}</NuxtLink>
+                                            <NuxtLink class="Link--primary" target="_blink" :to="userInfo.link">
+                                                {{ userInfo.link }}</NuxtLink>
                                         </li>
                                         <li v-show="userInfo.twitter" class="width-full pt-1 hide-sm hide-md">
                                             <BaseSvgIcon class="octicon mr-2 color-fg-muted" name="twitter"
@@ -151,20 +150,54 @@
 
 <script setup lang="ts">
 import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
-import { getOtherInfo } from '~~/api/auth';
+import { getOtherInfo, uploadAvatar } from '~~/api/auth';
+import { join } from '~~/shared/path';
+import { useAuth } from '~~/store/auth';
+
+function onUploadAvatar() {
+    const formData = new FormData()
+    const input = document.createElement('input')
+    input.setAttribute('type', 'file')
+    input.onchange = function () {
+        if (input.files) {
+            formData.set('avatar', input.files[0])
+        }
+        uploadAvatar(formData).then(res => {
+            avatarTimestamp.value = Date.now()
+        })
+    }
+    input.click()
+}
+
+const authStore = useAuth()
 const username = useRoute().params.username as string
 async function fetchUserInfo() {
     const { data, errMessage } = await getOtherInfo(username)
     if (!errMessage) {
-        return data
+        return data.info
     }
 }
 
 const userInfo = (await useAsyncData(async () => {
     return await fetchUserInfo()
-})).data.value.info
+})).data.value
 
+const avatarTimestamp = ref(Date.now())
 
+const avatarUrl = computed(() => {
+    return join(useRuntimeConfig().app.baseURL, '/api/proxy/public/avatar?id=' + userInfo.id + '&timestamp=' + avatarTimestamp.value)
+})
+
+// 用户不存在
+if (!userInfo) {
+    await navigateTo({
+        name: '404',
+    })
+}
+
+const isMyself = computed(() => {
+    return authStore.info && authStore.info.username === username
+})
 
 function switchTab(tab: string[] | string | undefined) {
     if (typeof tab === 'string') {

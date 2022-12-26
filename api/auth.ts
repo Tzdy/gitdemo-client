@@ -2,7 +2,7 @@ import clientRequest from "./share";
 
 export function login(username: string, password: string) {
   return clientRequest(() =>
-    useFetch("/api/login", {
+    useFetch("/api/proxy/auth/login", {
       method: "post",
       body: {
         username,
@@ -15,10 +15,10 @@ export function login(username: string, password: string) {
 export function getInfo() {
   const token = useCookie("token");
   return clientRequest(() =>
-    useFetch("/api/info", {
+    useFetch("/api/proxy/auth/info", {
       method: "post",
-      body: {
-        token: token.value || "",
+      headers: {
+        authorization: token.value || "",
       },
     })
   );
@@ -27,11 +27,24 @@ export function getInfo() {
 export function getOtherInfo(username: string) {
   const token = useCookie("token");
   return clientRequest(() =>
-    useFetch("/api/otherInfo", {
+    useFetch("/api/proxy/auth/other_info", {
       method: "post",
       body: {
         username,
       },
+    })
+  );
+}
+
+export function uploadAvatar(formData: FormData) {
+  const token = useCookie("token");
+  return clientRequest(() =>
+    useFetch("/api/proxy/auth/upload_info_avatar", {
+      method: "post",
+      headers: {
+        authorization: token.value || "",
+      },
+      body: formData,
     })
   );
 }

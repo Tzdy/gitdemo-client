@@ -11,7 +11,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
     if (authStore.info) {
       if (to.path.includes("login")) {
-        console.log(to.path);
         return await navigateTo(
           { path: `/${authStore.info.username}` },
           {
