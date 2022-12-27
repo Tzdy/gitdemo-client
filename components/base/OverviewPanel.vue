@@ -11,7 +11,7 @@
     <!-- overview Box -->
     <ol class="d-flex flex-wrap list-style-none gutter-condensed position-relative mb-2">
         <TransitionGroup name="list">
-            <li ref="overviewsCard" v-for="(item, index) in overviewsList" :key="item.name"
+            <li ref="overviewsCard" v-for="(item, index) in overviewsList" :key="item.repoName"
                 :draggable="draggables[index]" @dragend="dragEndHandler" @dragover="dragOverhandler(index)"
                 @transitionend="transitionendHandler"
                 class="overviews-card mb-3 d-flex flex-content-stretch col-12 col-md-6 col-lg-6">
@@ -22,11 +22,11 @@
                             <div class="flex-1">
                                 <BaseSvgIcon name="repository" :size="16" class="octicon mr-2 color-fg-muted" />
                                 <NuxtLink class="mr-2 text-bold wb-break-word" :to="item.url">
-                                    <span class="repo" :title="item.name">{{ item.name }}</span>
+                                    <span class="repo" :title="item.repoName">{{ item.repoName }}</span>
                                 </NuxtLink>
                                 <span class="Label Label--secondary v-align-middle mt-1 no-wrap Label--inline">{{
-                                        item.type
-                                }}</span>
+        item.type
+}}</span>
                             </div>
                             <span class="pl-2" title="Drag to reorder"
                                 @touchstart.prevent="touchStartHandler($event, index)" @touchmove="touchMoveHandler"
@@ -37,7 +37,7 @@
 
                         <!-- overview card content -->
                         <p class="color-fg-muted text-small mt-2 mb-0">
-                            {{ item.introduce }}
+                            {{ item.about }}
                         </p>
                         <!-- overview card info -->
                         <p class="mb-0 mt-2 f6 color-fg-muted">
@@ -49,7 +49,7 @@
                             </NuxtLink>
                             <NuxtLink to="/Tzdy/Tsdy-module/network/members" class="ml-3 Link--muted">
                                 <BaseSvgIcon name="fork" :size="16" class="octicon mr-1" />
-                                <span>{{ item.forksNum }}</span>
+                                <span>{{ item.forkNum }}</span>
                             </NuxtLink>
                         </p>
                     </div>
@@ -66,11 +66,11 @@
                         <div class="flex-1">
                             <BaseSvgIcon name="repository" :size="16" class="octicon mr-2 color-fg-muted" />
                             <NuxtLink class="mr-2 text-bold wb-break-word" :to="mobileDragItem.url">
-                                <span class="repo" :title="mobileDragItem.name">{{ mobileDragItem.name }}</span>
+                                <span class="repo" :title="mobileDragItem.repoName">{{ mobileDragItem.repoName }}</span>
                             </NuxtLink>
                             <span class="Label Label--secondary v-align-middle mt-1 no-wrap Label--inline">{{
-                                    mobileDragItem.type
-                            }}</span>
+        mobileDragItem.type
+}}</span>
                         </div>
                         <span class="pl-2" title="Drag to reorder">
                             <BaseSvgIcon style="cursor: grab" name="drag" :size="16" class="octicon" />
@@ -79,7 +79,7 @@
 
                     <!-- overview card content -->
                     <p class="color-fg-muted text-small mt-2 mb-0">
-                        {{ mobileDragItem.introduce }}
+                        {{ mobileDragItem.about }}
                     </p>
                     <!-- overview card info -->
                     <p class="mb-0 mt-2 f6 color-fg-muted">
@@ -91,7 +91,7 @@
                         </NuxtLink>
                         <NuxtLink to="/Tzdy/Tsdy-module/network/members" class="ml-3 Link--muted">
                             <BaseSvgIcon name="fork" :size="16" class="octicon mr-1" />
-                            <span>{{ mobileDragItem.forksNum }}</span>
+                            <span>{{ mobileDragItem.forkNum }}</span>
                         </NuxtLink>
                     </p>
                 </div>
@@ -104,10 +104,10 @@
 import { PropType } from 'vue';
 
 export interface Overview {
-    name: string;
-    introduce: string;
+    repoName: string;
     url: string;
-    type: 'public' | 'private';
+    about: string;
+    type: 'Public' | 'Private';
     language: string;
     sortIndex: number;
     starNum: number;
@@ -162,7 +162,7 @@ function transitionendHandler() {
 const overviews = toRef(props, 'overviews')
 
 loading.value = false
-const overviewsList = ref([])
+const overviewsList = ref<Overview[]>([])
 
 onMounted(() => {
     watch(overviews, () => {
@@ -178,10 +178,10 @@ onMounted(() => {
 
 // 移动端兼容拖拽
 const mobileDragItem = ref<Overview>({
-    name: '',
-    introduce: '',
+    repoName: '',
     url: '',
-    type: 'public',
+    about: '',
+    type: 'Public',
     language: '',
     sortIndex: 0,
     starNum: 0,

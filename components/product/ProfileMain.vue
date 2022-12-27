@@ -155,6 +155,9 @@ import { join } from '~~/shared/path';
 import { useAuth } from '~~/store/auth';
 
 function onUploadAvatar() {
+    if (!isMyself.value) {
+        return
+    }
     const formData = new FormData()
     const input = document.createElement('input')
     input.setAttribute('type', 'file')

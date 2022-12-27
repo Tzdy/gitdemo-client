@@ -56,7 +56,7 @@
                             </div>
                             <div class="Box-footer text-right border-top-0">
                                 <span class="float-left text-small pt-3 lh-condensed-ultra color-fg-danger">{{ remaining
-                                }}
+}}
                                     remaining</span>
                                 <button type="submit" class="btn btn-primary">
                                     Save pins
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                 </details>
-                <BaseOverviewPanel :overviews="overviews" />
+                <BaseOverviewPanel :overviews="overviewList" />
             </div>
         </div>
         <div class="mt-4">
@@ -80,8 +80,9 @@
 </template>
 
 <script setup lang="ts">
+import { listRepo } from '~~/api/repo'
+import { join } from '~~/shared/path';
 import { Overview } from '../base/OverviewPanel.vue';
-
 const repositories = reactive([
     {
         name: 'Blob',
@@ -160,40 +161,29 @@ const details = ref<HTMLElement>(null)
 function offDetailsHandler() {
     details.value.removeAttribute('open')
 }
-
-const overviews = reactive<Overview[]>([
-    {
-        name: 'Tsdy-Module',
-        introduce: ' 通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件 ',
-        url: '/Tsdy-Module',
-        type: 'public',
-        language: 'JavaScript',
-        sortIndex: 2,
-        starNum: 100,
-        forkNum: 3,
-    },
-    {
-        name: 'Exist',
-        introduce: ' 通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件 ',
-        url: '/Tsdy-Module',
-        type: 'public',
-        language: 'JavaScript',
-        sortIndex: 1,
-        starNum: 100,
-        forkNum: 3,
-
-    },
-    {
-        name: 'weixin-clicnent',
-        introduce: ' 通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件  通过原生js，css完成的组件 ',
-        url: '/Tsdy-Module',
-        type: 'public',
-        language: 'Vue',
-        sortIndex: 0,
-        starNum: 10,
-        forkNum: 3,
+const username = useRoute().params.username as string
+async function fetchOverviews() {
+    const { errMessage, data } = await listRepo(username, 1, 6, true, 0)
+    if (!errMessage) {
+        return data.repoList
     }
-])
+}
+const repoList = (await useAsyncData(async () => {
+    return await fetchOverviews()
+})).data.value
+
+const overviewList = computed<Overview[]>(() => {
+    return repoList.map(repo => ({
+        repoName: repo.repo_name,
+        url: join(username, repo.repo_name),
+        about: repo.about,
+        type: repo.type === 0 ? 'Public' : 'Private',
+        language: repo.language,
+        sortIndex: repo.is_overview,
+        starNum: repo.star_num
+    }))
+})
+
 const remaining = ref(6)
 const overviewDisabled = ref(false)
 function calcRemaining() {
