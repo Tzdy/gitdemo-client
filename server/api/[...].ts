@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
           ignorePath: true,
           target: join(
             useRuntimeConfig().public.apiBase,
-            (event.node.req.url || "").replace(/^\/api\/proxy/, "")
+            (event.node.req.url || "").replace(/^\/api/, "")
           ),
         },
         (err) => {
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
       event,
       join(
         useRuntimeConfig().public.apiBase,
-        (event.node.req.url || "").replace(/^\/api\/proxy/, "")
+        (event.node.req.url || "").replace(/^\/api/, "")
       )
     );
   }

@@ -185,7 +185,7 @@ const userInfo = (await useAsyncData(async () => {
 const avatarTimestamp = ref(Date.now())
 
 const avatarUrl = computed(() => {
-    return join(useRuntimeConfig().app.baseURL, '/api/proxy/public/avatar?id=' + userInfo.id + '&timestamp=' + avatarTimestamp.value)
+    return join(useRuntimeConfig().app.baseURL, '/api/public/avatar?id=' + userInfo.id + '&timestamp=' + avatarTimestamp.value)
 })
 
 // 用户不存在
