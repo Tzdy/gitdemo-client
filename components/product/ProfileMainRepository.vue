@@ -34,16 +34,16 @@
         </div>
         <!-- repository list -->
         <ul>
-            <li v-for="repo in repoList" :key="repo.name"
+            <li v-for="repo in repoList" :key="repo.repoName"
                 class="col-12 d-flex flex-justify-between width-full py-4 border-bottom color-border-muted">
                 <div class="col-10 col-lg-9 d-inline-block">
                     <h3 class="wb-break-all">
-                        <NuxtLink :to="`/${username}/${repo.name}`" itemprop="name codeRepository">
-                            {{ repo.name }}</NuxtLink>
+                        <NuxtLink :to="repo.url" itemprop="name codeRepository">
+                            {{ repo.repoName }}</NuxtLink>
                         <span class="Label Label--secondary v-align-middle ml-1 mb-1">{{ repo.type }}</span>
                     </h3>
                     <p class="wb-break-all col-9 d-inline-block color-fg-muted mb-2 pr-4" itemprop="description">
-                        {{ repo.introduce }}
+                        {{ repo.repoName }}
                     </p>
                     <div class="f6 color-fg-muted mt-2">
                         <BaseLanguage class="d-inline-block mr-3" :language="repo.language" />
@@ -72,35 +72,46 @@
 
 <script setup lang="ts">
 import { repoUpdatedTime } from '@/shared/timeFormat'
+import { listRepo } from '~~/api/repo';
+import { join } from '~~/shared/path';
 
 interface RepoInfo {
-    _id: string,
-    name: string
+    repoName: string;
     type: 'Public' | 'Private',
-    introduce: string,
+    url: string;
+    about: string,
     language: string,
-    updatedTime: string,
+    updatedTime: number,
     starNum: number,
     forkNum: number,
-    isStar: boolean
+    isStar?: boolean
 }
+
 const username = useRoute().params['username'] as string
 const selectType = reactive(['All', 'Public', 'Private'])
 const selectLanguage = reactive(['All', 'JavaScript', 'Css', 'TypeScript', 'C'])
 const selectSort = reactive(['Last updated', 'Name', 'Star'])
-const repoList = reactive<RepoInfo[]>([
-    {
-        _id: 'dasdsadsa',
-        name: 'Tsdy-Module',
-        type: 'Public',
-        introduce: '通过原生js，css完成的组件',
-        language: 'TypeScript',
-        updatedTime: '2022-08-13T10:48:26.653Z',
-        starNum: 18,
-        forkNum: 9,
-        isStar: true,
+const repoList = ref<RepoInfo[]>()
+async function fetchListRepo() {
+    const { data, errMessage } = await listRepo(username, 1, 50)
+    if (!errMessage) {
+        repoList.value = data.repoList.map(repo => ({
+            repoName: repo.repo_name,
+            url: join(username, repo.repo_name),
+            about: repo.about,
+            type: repo.type === 0 ? 'Public' : 'Private',
+            language: repo.language,
+            sortIndex: repo.is_overview,
+            starNum: repo.star_num,
+            forkNum: 0,
+            updatedTime: repo.update_time,
+        }))
     }
-])
+}
+await useAsyncData(async () => await fetchListRepo())
+
+console.log(repoList.value)
+
 function onSelectType(type: string) {
     console.log(type)
 }
@@ -118,4 +129,5 @@ function onToggleStar(isStar: boolean) {
 </script>
 
 <style scoped>
+
 </style>

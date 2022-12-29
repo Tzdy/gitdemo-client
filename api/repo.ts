@@ -1,3 +1,4 @@
+import { ListRepoResDto } from "./repo/listRepoDto";
 import clientRequest from "./share";
 export function listRepo(
   username: string,
@@ -10,11 +11,11 @@ export function listRepo(
   keyword?: string
 ) {
   const token = useCookie("token");
-  return clientRequest(() =>
+  return clientRequest<ListRepoResDto["data"]>(() =>
     useFetch("/api/repo/list_repo", {
       method: "post",
       headers: {
-        authorization: token.value,
+        authorization: token.value || "",
       },
       body: {
         username,

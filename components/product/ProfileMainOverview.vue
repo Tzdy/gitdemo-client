@@ -157,9 +157,9 @@ const repositories = reactive([
 ])
 const repositoriesSearchResult = ref(repositories)
 
-const details = ref<HTMLElement>(null)
+const details = ref<HTMLElement | null>(null)
 function offDetailsHandler() {
-    details.value.removeAttribute('open')
+    details.value && details.value.removeAttribute('open')
 }
 const username = useRoute().params.username as string
 async function fetchOverviews() {
@@ -170,7 +170,7 @@ async function fetchOverviews() {
 }
 const repoList = (await useAsyncData(async () => {
     return await fetchOverviews()
-})).data.value
+})).data.value || []
 
 const overviewList = computed<Overview[]>(() => {
     return repoList.map(repo => ({
@@ -180,7 +180,8 @@ const overviewList = computed<Overview[]>(() => {
         type: repo.type === 0 ? 'Public' : 'Private',
         language: repo.language,
         sortIndex: repo.is_overview,
-        starNum: repo.star_num
+        starNum: repo.star_num,
+        forkNum: 0,
     }))
 })
 

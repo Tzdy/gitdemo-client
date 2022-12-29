@@ -1,4 +1,6 @@
-export default async function clientRequest(callback: () => Promise<any>) {
+export default async function clientRequest<DTO>(
+  callback: () => Promise<any>
+): Promise<{ data: DTO; errMessage: string }> {
   const { data, error } = await callback();
   let errMessage: string = "";
   if (error.value) {

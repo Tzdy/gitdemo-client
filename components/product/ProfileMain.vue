@@ -90,12 +90,13 @@
                                         <button @click="isEdit = false" type="reset" class="btn-sm btn">Cancel</button>
                                     </div>
                                 </BaseForm>
-                                <div :hidden="isEdit || !isMyself" class="flex-column d-md-block">
+                                <div v-show="!isEdit" class="flex-column d-md-block">
                                     <div class="mb-3 f4">
                                         <div>{{ userInfo.bio }}</div>
                                     </div>
                                     <div class="mb-3">
-                                        <button @click="isEdit = true" type="button" class="btn btn-block">Edit
+                                        <button v-if="isMyself && !isEdit" @click="isEdit = true" type="button"
+                                            class="btn btn-block">Edit
                                             profile</button>
                                     </div>
 
