@@ -196,6 +196,7 @@ const avatarUrl = computed(() => {
 if (!userInfo) {
     await navigateTo({
         name: '404',
+        replace: true
     })
 }
 
