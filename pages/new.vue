@@ -1,0 +1,4 @@
+<template>
+    <ProductHeader />
+    <ProductNewRepo />
+</template>

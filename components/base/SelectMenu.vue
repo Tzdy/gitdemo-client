@@ -38,7 +38,7 @@ const props = defineProps({
     },
     defaultItem: {
         type: String,
-    }
+    },
 })
 const emit = defineEmits(['select'])
 
@@ -66,4 +66,5 @@ function onClose() {
 </script>
 
 <style scoped>
+
 </style>

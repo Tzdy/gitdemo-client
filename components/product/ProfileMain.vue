@@ -48,7 +48,7 @@
                             </div>
                             <!-- 个人信息展示和修改 -->
                             <div class="d-flex flex-column">
-                                <BaseForm :hidden="!isEdit" :data="userInfo" class="position-relative flex-auto">
+                                <BaseForm v-if="isEdit" :data="userInfo" class="position-relative flex-auto">
                                     <div class="mb-2">
                                         <label class="f5 d-block mb-1">Name</label>
                                         <input v-model="userInfo.nickname" class="width-full form-control"
@@ -90,7 +90,8 @@
                                         <button @click="isEdit = false" type="reset" class="btn-sm btn">Cancel</button>
                                     </div>
                                 </BaseForm>
-                                <div v-show="!isEdit" class="flex-column d-md-block">
+                                <!-- 这里使用v-if是因为d-md-block是display: block !important -->
+                                <div v-if="!isEdit" class="flex-column d-md-block">
                                     <div class="mb-3 f4">
                                         <div>{{ userInfo.bio }}</div>
                                     </div>
@@ -168,6 +169,7 @@ function onUploadAvatar() {
         }
         uploadAvatar(formData).then(res => {
             avatarVersion.value = res.data.v
+            authStore.info && (authStore.info.avatar_version = res.data.v)
         })
     }
     input.click()

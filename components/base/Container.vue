@@ -15,6 +15,7 @@ export default defineComponent({
     & {
         // Global requirements
         @import '@primer/css/core/index.scss';
+        @import '@primer/css/subhead/index.scss';
         @import '@primer/css/alerts/index.scss';
         @import '@primer/css/avatars/index.scss';
         @import '@primer/css/dropdown/index.scss';

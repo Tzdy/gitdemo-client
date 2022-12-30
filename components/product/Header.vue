@@ -1,6 +1,6 @@
 <template>
     <BaseContainer>
-        <div class="Header Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap">
+        <div class="overwrite Header Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap">
             <!-- Mobile -->
             <div class="Header-item d-md-none">
                 <button type="button" class="Header-link btn-link">
@@ -54,7 +54,7 @@
             </div>
             <div class="Header-item mr-0 ml-auto d-none d-md-flex">
                 <BaseDropDown class="Header-link" v-if="userInfo" :data="avatarDropdownItems">
-                    <img class="avatar circle" height="20" alt="@octocat" :src="userInfo.avatar" width="20" />
+                    <img class="avatar circle" height="20" alt="@octocat" :src="avatar" width="20" />
                 </BaseDropDown>
                 <NuxtLink v-else class="Header-link f4 text-bold" to="/login">SIGN IN</NuxtLink>
             </div>
@@ -71,6 +71,10 @@ const userInfo = computed(() => {
     return authStore.info
 })
 
+const avatar = computed(() => {
+    return authStore.avatar
+})
+
 const searchBoxState = ref(false)
 const avatarDropdownItems = [{ name: 'profile', url: '/profile' }, [{ name: 'Upgrade', url: '/upgrade' }]]
 const plusDropdownItems = [{ name: 'New repository', url: '/new' }]
@@ -85,36 +89,41 @@ onMounted(() => {
 <style scoped lang="scss">
 @import "@primer/css/support/index.scss";
 
-.header-search-input-wrap {
-    border: 1px #57606a solid;
-    border-radius: 6px;
-}
+.overwrite {
+    & {
+        .header-search-input-wrap {
+            border: 1px #57606a solid;
+            border-radius: 6px;
+        }
 
-.header-search-input {
-    display: table-cell;
-    width: 100%;
-    padding-top: 0;
-    padding-bottom: 0;
-    font-size: inherit;
-    color: inherit;
-    background: none;
-    border: 0;
-    box-shadow: none;
-    min-height: 28px;
-}
+        .header-search-input {
+            display: table-cell;
+            width: 100%;
+            padding-top: 0;
+            padding-bottom: 0;
+            font-size: inherit;
+            color: inherit;
+            background: none;
+            // 防止被外层
+            border: 0;
+            box-shadow: none;
+            height: 26px;
+        }
 
-@media screen and (min-width: $width-md) {
-    .header-search-md-block {
-        width: 542px;
+        @media screen and (min-width: $width-md) {
+            .header-search-md-block {
+                width: 542px;
+            }
+
+            .header-search-md-common {
+                width: 272px;
+            }
+
+            .header-md-search {
+                transition: width .3s;
+            }
+
+        }
     }
-
-    .header-search-md-common {
-        width: 272px;
-    }
-
-    .header-md-search {
-        transition: width .3s;
-    }
-
 }
 </style>
