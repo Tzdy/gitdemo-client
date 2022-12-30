@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { getInfo, login } from "~~/api/auth";
+import { join } from "~~/shared/path";
 
 interface UserInfo {
   id: number;
   username: string;
   nickname: string;
   created_time: Date;
-  avatar: string;
+  avatar_version: number;
   bio: string;
   address: string;
   link: string;
@@ -20,6 +21,20 @@ export const useAuth = defineStore("auth", {
     token: "",
     info: null as null | UserInfo,
   }),
+  getters: {
+    avatar: (state) => {
+      if (state.info) {
+        return join(
+          useRuntimeConfig().app.baseURL,
+          "/api/public/avatar?id=" +
+            state.info.id +
+            "&v=" +
+            state.info.avatar_version
+        );
+      }
+      return "";
+    },
+  },
   actions: {
     async login(username: string, password: string) {
       const cookie = useCookie("token");

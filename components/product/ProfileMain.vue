@@ -167,7 +167,7 @@ function onUploadAvatar() {
             formData.set('avatar', input.files[0])
         }
         uploadAvatar(formData).then(res => {
-            avatarTimestamp.value = Date.now()
+            avatarVersion.value = res.data.v
         })
     }
     input.click()
@@ -186,10 +186,10 @@ const userInfo = (await useAsyncData(async () => {
     return await fetchUserInfo()
 })).data.value
 
-const avatarTimestamp = ref(Date.now())
+const avatarVersion = ref(userInfo.avatar_version)
 
 const avatarUrl = computed(() => {
-    return join(useRuntimeConfig().app.baseURL, '/api/public/avatar?id=' + userInfo.id + '&timestamp=' + avatarTimestamp.value)
+    return join(useRuntimeConfig().app.baseURL, '/api/public/avatar?id=' + userInfo.id + '&v=' + avatarVersion.value)
 })
 
 // 用户不存在
