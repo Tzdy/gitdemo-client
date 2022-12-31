@@ -8,7 +8,7 @@ export declare class InfoDto {
     username: string;
     nickname: string;
     created_time: Date;
-    avatar: string;
+    avatar_version: number;
     bio: string;
     address: string;
     link: string;

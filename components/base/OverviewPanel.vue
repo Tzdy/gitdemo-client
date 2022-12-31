@@ -28,7 +28,7 @@
         item.type
 }}</span>
                             </div>
-                            <span class="pl-2" title="Drag to reorder"
+                            <span v-show="allowDrag" class="pl-2" title="Drag to reorder"
                                 @touchstart.prevent="touchStartHandler($event, index)" @touchmove="touchMoveHandler"
                                 @touchend="touchEndHandler" @mousedown="downHandler(index)" style="cursor: grab">
                                 <BaseSvgIcon name="drag" :size="16" class="octicon" />
@@ -104,6 +104,7 @@
 import { PropType } from 'vue';
 
 export interface Overview {
+    id: number;
     repoName: string;
     url: string;
     about: string;
@@ -118,8 +119,15 @@ const props = defineProps({
     overviews: {
         type: Array as PropType<Array<Overview>>,
         required: true
+    },
+    allowDrag: {
+        type: Boolean,
+        default: false,
     }
 })
+
+const emit = defineEmits(['change'])
+
 const loading = ref(true)
 const draggables = reactive([])
 let transitioning = false
@@ -130,6 +138,9 @@ props.overviews.forEach((v, index) => {
 })
 
 function downHandler(index: number) {
+    if (!props.allowDrag) {
+        return
+    }
     draggables[index] = true
     dragNowIndex = index
 }
@@ -138,6 +149,7 @@ function dragEndHandler() {
     draggables.forEach((v, index) => {
         draggables[index] = false
     })
+    emit('change', [...overviews], [...overviewsList.value])
 }
 
 function dragOverhandler(index: number) {
@@ -159,16 +171,16 @@ function transitionendHandler() {
 }
 
 
-const overviews = toRef(props, 'overviews')
+let overviews: Overview[] = []
 
 loading.value = false
 const overviewsList = ref<Overview[]>([])
 
 onMounted(() => {
-    watch(overviews, () => {
+    watch(toRef(props, 'overviews'), () => {
         console.log('change')
-        overviews.value.sort((a, b) => a.sortIndex - b.sortIndex)
-        overviewsList.value = toRaw(overviews).value.map(item => {
+        overviews = props.overviews.sort((a, b) => a.sortIndex - b.sortIndex)
+        overviewsList.value = overviews.map(item => {
             return {
                 ...item
             }
@@ -178,6 +190,7 @@ onMounted(() => {
 
 // 移动端兼容拖拽
 const mobileDragItem = ref<Overview>({
+    id: 0,
     repoName: '',
     url: '',
     about: '',
@@ -219,6 +232,9 @@ function resetOverviewsPos() {
 }
 
 function touchStartHandler(event: TouchEvent, index: number) {
+    if (!props.allowDrag) {
+        return
+    }
     dragNowIndex = index
     const target = (event.target as HTMLElement).closest('.overviews-card') as HTMLElement
     const touch = event.touches[0]
@@ -256,6 +272,7 @@ function touchMoveHandler(event: TouchEvent) {
 
 function touchEndHandler() {
     isDrag.value = false
+    emit('change', [...overviews], [...overviewsList.value])
 }
 
 </script>

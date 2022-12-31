@@ -3,7 +3,7 @@
         <div class="mt-4">
             <div>
                 <!-- 自定义 overview -->
-                <details class="details-reset details-overlay details-overlay-dark" ref="details">
+                <details v-if="!!isMyself" class="details-reset details-overlay details-overlay-dark" ref="details">
                     <summary class="btn-link Link--muted float-right mt-1 f6">Customize your pins</summary>
                     <div class="anim-fade-in fast Box Box--overlay d-flex flex-column details-dialog"
                         style="z-Index: 999">
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                 </details>
-                <BaseOverviewPanel :overviews="overviewList" />
+                <BaseOverviewPanel @change="onChangeOverviewSort" :allow-drag="!!isMyself" :overviews="overviewList" />
             </div>
         </div>
         <div class="mt-4">
@@ -80,8 +80,9 @@
 </template>
 
 <script setup lang="ts">
-import { listRepo } from '~~/api/repo'
+import { listRepo, setRepo } from '~~/api/repo'
 import { join } from '~~/shared/path';
+import { useAuth } from '~~/store/auth';
 import { Overview } from '../base/OverviewPanel.vue';
 const repositories = reactive([
     {
@@ -162,18 +163,35 @@ function offDetailsHandler() {
     details.value && details.value.removeAttribute('open')
 }
 const username = useRoute().params.username as string
-async function fetchOverviews() {
+
+const authStore = useAuth()
+
+const isMyself = computed(() => {
+    return authStore.info && authStore.info.username === username
+})
+
+
+async function fetchOverview() {
     const { errMessage, data } = await listRepo(username, 1, 6, true, 0)
     if (!errMessage) {
         return data.repoList
     }
 }
+
+async function fetchRepo() {
+    const { errMessage, data } = await listRepo(username, 1, 50, false, 0)
+    if (!errMessage) {
+        return data.repoList
+    }
+}
+
 const repoList = (await useAsyncData(async () => {
-    return await fetchOverviews()
+    return await fetchOverview()
 })).data.value || []
 
 const overviewList = computed<Overview[]>(() => {
     return repoList.map(repo => ({
+        id: repo.id,
         repoName: repo.repo_name,
         url: join(username, repo.repo_name),
         about: repo.about,
@@ -184,6 +202,17 @@ const overviewList = computed<Overview[]>(() => {
         forkNum: 0,
     }))
 })
+
+async function onChangeOverviewSort(oldOverview: Overview[], newOverview: Overview[]) {
+    oldOverview.sort((a, b) => a.sortIndex - b.sortIndex)
+    newOverview.sort((a, b) => a.sortIndex - b.sortIndex)
+
+    for (let i = 0; i < oldOverview.length; i++) {
+        if (newOverview[i].repoName !== oldOverview[i].repoName) {
+            await setRepo(newOverview[i].id, undefined, undefined, undefined, undefined, undefined, newOverview[i].sortIndex)
+        }
+    }
+}
 
 const remaining = ref(6)
 const overviewDisabled = ref(false)
