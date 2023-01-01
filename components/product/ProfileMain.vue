@@ -188,11 +188,6 @@ const userInfo = (await useAsyncData(async () => {
     return await fetchUserInfo()
 })).data.value
 
-const avatarVersion = ref(userInfo.avatar_version)
-
-const avatarUrl = computed(() => {
-    return join(useRuntimeConfig().app.baseURL, '/api/public/avatar?id=' + userInfo.id + '&v=' + avatarVersion.value)
-})
 
 // 用户不存在
 if (!userInfo) {
@@ -201,6 +196,13 @@ if (!userInfo) {
         replace: true
     })
 }
+
+const avatarVersion = ref(userInfo.avatar_version)
+
+const avatarUrl = computed(() => {
+    return join(useRuntimeConfig().app.baseURL, '/api/public/avatar?id=' + userInfo.id + '&v=' + avatarVersion.value)
+})
+
 
 const isMyself = computed(() => {
     return authStore.info && authStore.info.username === username

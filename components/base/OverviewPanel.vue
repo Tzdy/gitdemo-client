@@ -41,7 +41,7 @@
                         </p>
                         <!-- overview card info -->
                         <p class="mb-0 mt-2 f6 color-fg-muted">
-                            <BaseLanguage class="d-inline-block mr-3" :language="item.language" />
+                            <BaseLanguage v-if="item.language" class="d-inline-block mr-3" :language="item.language" />
 
                             <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted">
                                 <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
@@ -83,7 +83,8 @@
                     </p>
                     <!-- overview card info -->
                     <p class="mb-0 mt-2 f6 color-fg-muted">
-                        <BaseLanguage class="d-inline-block mr-3" :language="mobileDragItem.language" />
+                        <BaseLanguage v-if="mobileDragItem.language" class="d-inline-block mr-3"
+                            :language="mobileDragItem.language" />
 
                         <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted">
                             <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />

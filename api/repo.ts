@@ -1,3 +1,5 @@
+import { useAuth } from "~~/store/auth";
+import { CreateRepoReqDto } from "./repo/createRepoDto";
 import { ListRepoResDto } from "./repo/listRepoDto";
 import { SetRepoReqDto, SetRepoResDto } from "./repo/setRepoDto";
 import { RepoType } from "./repo/share";
@@ -12,13 +14,14 @@ export function listRepo(
   languageId?: number,
   keyword?: string
 ) {
-  const token = useCookie("token");
+  const authStore = useAuth();
+  const headers: HeadersInit = {};
+  username === authStore.info?.username &&
+    (headers["authorization"] = authStore.token);
   return clientRequest<ListRepoResDto["data"]>(() =>
     useFetch("/api/repo/list_repo", {
       method: "post",
-      headers: {
-        authorization: token.value || "",
-      },
+      headers,
       body: {
         username,
         page,
@@ -58,6 +61,23 @@ export function setRepo(
         languageId,
         isOverview,
       } as SetRepoReqDto,
+    })
+  );
+}
+
+export function createRepo(repoName: string, type: RepoType, about: string) {
+  const token = useCookie("token");
+  return clientRequest<void>(() =>
+    useFetch("/api/repo/create_repo", {
+      method: "post",
+      headers: {
+        authorization: token.value || "",
+      },
+      body: {
+        repoName,
+        type,
+        about,
+      } as CreateRepoReqDto,
     })
   );
 }

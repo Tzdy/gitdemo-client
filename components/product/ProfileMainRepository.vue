@@ -3,7 +3,7 @@
         <!-- header -->
         <div class="border-bottom color-border-muted py-3">
             <!-- mobile new repository btn -->
-            <NuxtLink to="/new"
+            <NuxtLink v-if="isMyself" to="/new"
                 class="d-md-none btn btn-primary d-flex flex-items-center flex-justify-center width-full mb-4">
                 <BaseSvgIcon class="octicon mr-1" name="repository" :size="16" />
                 New
@@ -25,7 +25,7 @@
                 </div>
                 <!-- pc new repository btn -->
                 <div class="d-none d-md-flex flex-md-items-center flex-md-justify-end">
-                    <NuxtLink to="/new" class="text-center btn btn-primary ml-3">
+                    <NuxtLink v-if="isMyself" to="/new" :replace="true" class="text-center btn btn-primary ml-3">
                         <BaseSvgIcon class="octicon mr-1" name="repository" :size="16" />
                         New
                     </NuxtLink>
@@ -42,11 +42,11 @@
                             {{ repo.repoName }}</NuxtLink>
                         <span class="Label Label--secondary v-align-middle ml-1 mb-1">{{ repo.type }}</span>
                     </h3>
-                    <p class="wb-break-all col-9 d-inline-block color-fg-muted mb-2 pr-4" itemprop="description">
-                        {{ repo.repoName }}
+                    <p class="wb-break-all col-9 d-inline-block color-fg-muted mb-2 pr-4">
+                        {{ repo.about }}
                     </p>
                     <div class="f6 color-fg-muted mt-2">
-                        <BaseLanguage class="d-inline-block mr-3" :language="repo.language" />
+                        <BaseLanguage v-if="repo.language" class="d-inline-block mr-3" :language="repo.language" />
                         <NuxtLink v-show="repo.starNum" to="/Tzdy/Tsdy-module/stargazers"
                             class="Link--muted mr-3 no-wrap">
                             <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
@@ -74,6 +74,7 @@
 import { repoUpdatedTime } from '@/shared/timeFormat'
 import { listRepo } from '~~/api/repo';
 import { join } from '~~/shared/path';
+import { useAuth } from '~~/store/auth';
 
 interface RepoInfo {
     repoName: string;
@@ -86,8 +87,11 @@ interface RepoInfo {
     forkNum: number,
     isStar?: boolean
 }
-
+const authStore = useAuth()
 const username = useRoute().params['username'] as string
+const isMyself = computed(() => {
+    return authStore.info ? authStore.info.username === username : false
+})
 const selectType = reactive(['All', 'Public', 'Private'])
 const selectLanguage = reactive(['All', 'JavaScript', 'Css', 'TypeScript', 'C'])
 const selectSort = reactive(['Last updated', 'Name', 'Star'])
@@ -109,8 +113,6 @@ async function fetchListRepo() {
     }
 }
 await useAsyncData(async () => await fetchListRepo())
-
-console.log(repoList.value)
 
 function onSelectType(type: string) {
     console.log(type)
