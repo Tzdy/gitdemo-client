@@ -105,6 +105,7 @@ const remaining = ref(6)
 
 watch(toRef(props, 'repoList'), () => {
     repoList.value = props.repoList
+    calcRemine()
     oldRepoList = JSON.parse(JSON.stringify(repoList.value))
 }, {
     immediate: true,
@@ -126,7 +127,6 @@ function calcRemine() {
         overviewDisabled.value = true
     }
 }
-calcRemine()
 function onToggleOverview(item: Overview) {
     let max = 0
     repoList.value.forEach((it => {

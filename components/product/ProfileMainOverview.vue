@@ -47,6 +47,13 @@ async function fetchRepo() {
     }
 }
 
+async function fetchAllRepo() {
+    const { errMessage, data } = await listRepo(username, 1, 50, undefined, 0)
+    if (!errMessage) {
+        return data.repoList
+    }
+}
+
 const repoList = (await useAsyncData(async () => {
     return await fetchOverview()
 })).data
@@ -73,7 +80,7 @@ const allRepoList = ref<Overview[]>([])
 async function onOpenChangeOverview() {
     const overviewList: Overview[] = []
     const list: Overview[] = []
-    !(await fetchRepo())?.map(repo => ({
+    !(await fetchAllRepo())?.map(repo => ({
         id: repo.id,
         repoName: repo.repo_name,
         url: join(username, repo.repo_name),
