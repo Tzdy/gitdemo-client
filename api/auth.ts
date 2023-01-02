@@ -1,4 +1,7 @@
 import clientRequest from "./share";
+import type { InfoResDto } from "./auth/getInfoDto";
+import type { UploadAvatarResDto } from "./auth/uploadAvatarDto";
+import { SetInfoReqDto, SetInfoResDto } from "./auth/setInfoDto";
 
 export function login(username: string, password: string) {
   return clientRequest(() =>
@@ -14,7 +17,7 @@ export function login(username: string, password: string) {
 
 export function getInfo() {
   const token = useCookie("token");
-  return clientRequest(() =>
+  return clientRequest<InfoResDto["data"]>(() =>
     useFetch("/api/auth/info", {
       method: "post",
       headers: {
@@ -26,7 +29,7 @@ export function getInfo() {
 
 export function getOtherInfo(username: string) {
   const token = useCookie("token");
-  return clientRequest(() =>
+  return clientRequest<InfoResDto["data"]>(() =>
     useFetch("/api/auth/other_info", {
       method: "post",
       body: {
@@ -36,9 +39,22 @@ export function getOtherInfo(username: string) {
   );
 }
 
+export function setInfo(info: SetInfoReqDto) {
+  const token = useCookie("token");
+  return clientRequest<void>(() =>
+    useFetch("/api/auth/set_info", {
+      method: "post",
+      headers: {
+        authorization: token.value || "",
+      },
+      body: info,
+    })
+  );
+}
+
 export function uploadAvatar(formData: FormData) {
   const token = useCookie("token");
-  return clientRequest(() =>
+  return clientRequest<UploadAvatarResDto["data"]>(() =>
     useFetch("/api/auth/upload_info_avatar", {
       method: "post",
       headers: {

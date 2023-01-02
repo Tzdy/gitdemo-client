@@ -51,12 +51,12 @@
                                 <BaseForm v-if="isEdit" :data="userInfo" class="position-relative flex-auto">
                                     <div class="mb-2">
                                         <label class="f5 d-block mb-1">Name</label>
-                                        <input v-model="userInfo.nickname" class="width-full form-control"
+                                        <input v-model="userInfoEdit.nickname" class="width-full form-control"
                                             placeholder="Name">
                                     </div>
                                     <div>
                                         <label class="f5 d-block mb-1">Bio</label>
-                                        <textarea v-model="userInfo.bio" class="form-control mb-1 width-full"
+                                        <textarea v-model="userInfoEdit.bio" class="form-control mb-1 width-full"
                                             placeholder="Add a bio" rows="3" data-input-max-length="160"></textarea>
                                         <p class="note">
                                             You can <strong>@mention</strong> other users and organizations to link to
@@ -65,28 +65,29 @@
                                     </div>
                                     <div class="color-fg-muted mt-2 d-flex flex-items-center">
                                         <BaseSvgIcon class="octicon" name="originzation" :size="16" />
-                                        <input class="ml-2 form-control flex-auto input-sm"
-                                            v-model="userInfo.organization" placeholder="Company">
+                                        <input class="ml-2 form-control flex-auto input-sm" v-model="userInfoEdit.org"
+                                            placeholder="Company">
                                     </div>
                                     <div class="color-fg-muted mt-2 d-flex flex-items-center">
                                         <BaseSvgIcon class="octicon" name="position" :size="16" />
-                                        <input class="ml-2 form-control flex-auto input-sm" v-model="userInfo.address"
-                                            placeholder="Position">
+                                        <input class="ml-2 form-control flex-auto input-sm"
+                                            v-model="userInfoEdit.address" placeholder="Position">
                                     </div>
                                     <div class="color-fg-muted mt-2 d-flex flex-items-center">
                                         <BaseSvgIcon class="octicon" name="link" :size="16" />
-                                        <input class="ml-2 form-control flex-auto input-sm" v-model="userInfo.link"
+                                        <input class="ml-2 form-control flex-auto input-sm" v-model="userInfoEdit.link"
                                             placeholder="Link">
                                     </div>
                                     <div class="color-fg-muted mt-2 d-flex flex-items-center">
                                         <BaseSvgIcon class="octicon" name="twitter" :size="16" />
-                                        <input class="ml-2 form-control flex-auto input-sm" v-model="userInfo.twitter"
-                                            placeholder="Twitter">
+                                        <input class="ml-2 form-control flex-auto input-sm"
+                                            v-model="userInfoEdit.twitter" placeholder="Twitter">
                                     </div>
                                     <div class="my-3">
                                         <!-- error options -->
                                         <div class="color-fg-danger my-3"></div>
-                                        <button type="button" class="btn-primary btn-sm btn mr-1">Submit</button>
+                                        <button @click="onSubmitEdit" type="button"
+                                            class="btn-primary btn-sm btn mr-1">Submit</button>
                                         <button @click="isEdit = false" type="reset" class="btn-sm btn">Cancel</button>
                                     </div>
                                 </BaseForm>
@@ -96,17 +97,17 @@
                                         <div>{{ userInfo.bio }}</div>
                                     </div>
                                     <div class="mb-3">
-                                        <button v-if="isMyself && !isEdit" @click="isEdit = true" type="button"
+                                        <button v-if="isMyself && !isEdit" @click="onOpenEdit" type="button"
                                             class="btn btn-block">Edit
                                             profile</button>
                                     </div>
 
                                     <ul class="list-style-none f5 color-fg-default">
-                                        <li v-show="userInfo.organization" class="width-full pt-1 hide-sm hide-md">
+                                        <li v-show="userInfo.org" class="width-full pt-1 hide-sm hide-md">
                                             <BaseSvgIcon class="octicon mr-2 color-fg-muted" name="originzation"
                                                 :size="16" />
                                             <span>
-                                                {{ userInfo.organization }}
+                                                {{ userInfo.org }}
                                             </span>
                                         </li>
                                         <li v-show="userInfo.address" class="width-full pt-1 hide-sm hide-md">
@@ -152,7 +153,7 @@
 
 <script setup lang="ts">
 import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
-import { getOtherInfo, uploadAvatar } from '~~/api/auth';
+import { getOtherInfo, uploadAvatar, setInfo } from '~~/api/auth';
 import { join } from '~~/shared/path';
 import { useAuth } from '~~/store/auth';
 
@@ -163,20 +164,25 @@ function onUploadAvatar() {
     const formData = new FormData()
     const input = document.createElement('input')
     input.setAttribute('type', 'file')
-    input.onchange = function () {
+    input.onchange = async function () {
         if (input.files) {
             formData.set('avatar', input.files[0])
         }
-        uploadAvatar(formData).then(res => {
-            avatarVersion.value = res.data.v
-            authStore.info && (authStore.info.avatar_version = res.data.v)
-        })
+        const { data, errMessage } = await uploadAvatar(formData)
+        if (!errMessage) {
+            avatarVersion.value = data.v
+            authStore.info && (authStore.info.avatar_version = data.v)
+        }
     }
     input.click()
 }
 
+const isEdit = ref(false)
 const authStore = useAuth()
 const username = useRoute().params.username as string
+const isMyself = computed(() => {
+    return authStore.info && authStore.info.username === username
+})
 async function fetchUserInfo() {
     const { data, errMessage } = await getOtherInfo(username)
     if (!errMessage) {
@@ -184,28 +190,69 @@ async function fetchUserInfo() {
     }
 }
 
-const userInfo = (await useAsyncData(async () => {
+const userInfo = ref({
+    id: -1,
+    username: '',
+    nickname: '',
+    created_time: 0,
+    avatar_version: -1,
+    bio: '',
+    org: '',
+    address: '',
+    link: '',
+    twitter: '',
+})
+
+const userInfoEdit = ref({
+    id: -1,
+    username: '',
+    nickname: '',
+    created_time: 0,
+    avatar_version: -1,
+    bio: '',
+    org: '',
+    address: '',
+    link: '',
+    twitter: '',
+})
+
+function onOpenEdit() {
+    isEdit.value = true
+    userInfoEdit.value = {
+        ...userInfo.value
+    }
+}
+
+async function onSubmitEdit() {
+    const { errMessage } = await setInfo(userInfoEdit.value)
+    if (!errMessage) {
+        userInfo.value = userInfoEdit.value
+        isEdit.value = false
+    }
+}
+
+const userInfoResData = (await useAsyncData(async () => {
     return await fetchUserInfo()
 })).data.value
 
-
+const avatarVersion = ref(-1)
 // 用户不存在
-if (!userInfo) {
+if (!userInfoResData) {
     await navigateTo({
         name: '404',
         replace: true
     })
+} else {
+    userInfo.value = userInfoResData
+    avatarVersion.value = userInfo.value.avatar_version
 }
 
-const avatarVersion = ref(userInfo.avatar_version)
 
 const avatarUrl = computed(() => {
-    return join(useRuntimeConfig().app.baseURL, '/api/public/avatar?id=' + userInfo.id + '&v=' + avatarVersion.value)
-})
-
-
-const isMyself = computed(() => {
-    return authStore.info && authStore.info.username === username
+    if (!userInfo.value) {
+        return ''
+    }
+    return join(useRuntimeConfig().app.baseURL, '/api/public/avatar?id=' + userInfo.value.id + '&v=' + avatarVersion.value)
 })
 
 function switchTab(tab: string[] | string | undefined) {
@@ -216,10 +263,10 @@ function switchTab(tab: string[] | string | undefined) {
     }
 }
 const tabName = ref('')
-switchTab(useRoute().query.tab)
+switchTab(useRoute().query.tab as string)
 useRouter().afterEach((to, from) => {
     if (to.path === from.path) {
-        switchTab(to.query.tab)
+        switchTab(to.query.tab as string)
     }
 })
 const navItems = reactive<UnderlineNavItem[]>([
@@ -253,19 +300,6 @@ const navItems = reactive<UnderlineNavItem[]>([
         number: 0,
     },
 ])
-
-// main
-// const avatar = ref('https://www.tsdy.club/git/manage/user/info/avatar/Tsdy')
-// const userInfo = reactive({
-//     name: 'Tsdy',
-//     bio: 'developing',
-//     organization: '无',
-//     position: '天津',
-//     link: 'http://www.html.com',
-//     twitter: 'Tsdy',
-// })
-const isEdit = ref(false)
-
 
 </script>
 
