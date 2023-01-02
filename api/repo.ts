@@ -1,5 +1,9 @@
 import { useAuth } from "~~/store/auth";
 import { CreateRepoReqDto } from "./repo/createRepoDto";
+import {
+  ListAllRepoLanguageReqDto,
+  ListAllRepoLanguageResDto,
+} from "./repo/listAllRepoLanguageDto";
 import { ListRepoResDto } from "./repo/listRepoDto";
 import { SetRepoReqDto, SetRepoResDto } from "./repo/setRepoDto";
 import { RepoType } from "./repo/share";
@@ -32,6 +36,22 @@ export function listRepo(
         languageId,
         keyword,
       },
+    })
+  );
+}
+
+export function listAllRepoLanguage(username: string) {
+  const authStore = useAuth();
+  const headers: HeadersInit = {};
+  username === authStore.info?.username &&
+    (headers["authorization"] = authStore.token);
+  return clientRequest<ListAllRepoLanguageResDto["data"]>(() =>
+    useFetch("/api/repo/list_all_repo_language", {
+      method: "post",
+      headers,
+      body: {
+        username,
+      } as ListAllRepoLanguageReqDto,
     })
   );
 }

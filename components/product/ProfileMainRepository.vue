@@ -16,11 +16,11 @@
                     </div>
                     <div class="d-flex flex-wrap">
                         <BaseSelectMenu class="position-relative mt-1 mt-lg-0 mr-1" title="Type" :items="selectType"
-                            default-item="All" @select="onSelectType" />
+                            @select="onSelectType" />
                         <BaseSelectMenu class="position-relative mt-1 mt-lg-0 mr-1" title="Language"
-                            :items="selectLanguage" default-item="All" @select="onSelectLanguage" />
+                            :items="selectRepoLanguage" @select="onSelectLanguage" />
                         <BaseSelectMenu class="position-relative mt-1 mt-lg-0 mr-1" title="Sort" :items="selectSort"
-                            default-item="Last updated" @select="onSelectSort" />
+                            @select="onSelectSort" />
                     </div>
                 </div>
                 <!-- pc new repository btn -->
@@ -72,9 +72,21 @@
 
 <script setup lang="ts">
 import { repoUpdatedTime } from '@/shared/timeFormat'
-import { listRepo } from '~~/api/repo';
+import { listRepo, listAllRepoLanguage } from '~~/api/repo';
+import { ListAllRepoLanguageResDto } from '~~/api/repo/listAllRepoLanguageDto';
 import { join } from '~~/shared/path';
 import { useAuth } from '~~/store/auth';
+
+enum RepoType {
+    PUBLIC = 0,
+    PRIVATE = 1
+}
+
+enum ListRepoSortType {
+    LAST_UPDATE = 0,
+    NAME = 1,
+    STAR = 2
+}
 
 interface RepoInfo {
     repoName: string;
@@ -87,15 +99,59 @@ interface RepoInfo {
     forkNum: number,
     isStar?: boolean
 }
+
 const authStore = useAuth()
 const username = useRoute().params['username'] as string
 const isMyself = computed(() => {
     return authStore.info ? authStore.info.username === username : false
 })
-const selectType = reactive(['All', 'Public', 'Private'])
-const selectLanguage = reactive(['All', 'JavaScript', 'Css', 'TypeScript', 'C'])
-const selectSort = reactive(['Last updated', 'Name', 'Star'])
+const selectType = reactive([
+    {
+        name: 'All',
+        value: undefined,
+    },
+    {
+        name: 'Public',
+        value: RepoType.PUBLIC
+    },
+])
+if (isMyself.value) {
+    selectType.push({
+        name: 'Private',
+        value: RepoType.PRIVATE
+    })
+}
+const selectSort = reactive([
+    {
+        name: 'Last updated',
+        value: ListRepoSortType.LAST_UPDATE,
+    },
+    {
+        name: 'Name',
+        value: ListRepoSortType.NAME,
+    },
+    {
+        name: 'Star',
+        value: ListRepoSortType.STAR,
+    }
+])
 const repoList = ref<RepoInfo[]>()
+const selectRepoLanguage = ref<{ name: string, value: any }[]>([])
+
+async function fetchAllRepoLanguage() {
+    const { data, errMessage } = await listAllRepoLanguage(username)
+    if (!errMessage) {
+        selectRepoLanguage.value = data.languageList.map(item => ({
+            name: item.name,
+            value: item.id,
+        }))
+        selectRepoLanguage.value.unshift({
+            name: 'All',
+            value: undefined,
+        })
+    }
+}
+
 async function fetchListRepo() {
     const { data, errMessage } = await listRepo(username, 1, 50)
     if (!errMessage) {
@@ -113,6 +169,7 @@ async function fetchListRepo() {
     }
 }
 await useAsyncData(async () => await fetchListRepo())
+await useAsyncData(async () => await fetchAllRepoLanguage())
 
 function onSelectType(type: string) {
     console.log(type)

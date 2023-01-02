@@ -13,10 +13,11 @@
                     </button>
                 </header>
                 <div class="SelectMenu-list">
-                    <label @click="onSelect(item)" v-for="item in items" :key="item" class="SelectMenu-item">
-                        <BaseSvgIcon :style="{ visibility: item === selectItem ? 'visible' : 'hidden' }" name="check"
+                    <label @click="onSelect(index)" v-for="item, index in items" :key="item.name"
+                        class="SelectMenu-item">
+                        <BaseSvgIcon :style="{ visibility: index === selectIndex ? 'visible' : 'hidden' }" name="check"
                             :size="16" class="octicon SelectMenu-icon" />
-                        <span class="text-normal">{{ item }}</span>
+                        <span class="text-normal">{{ item.name }}</span>
                     </label>
 
                 </div>
@@ -33,28 +34,27 @@ const props = defineProps({
         type: String,
     },
     items: {
-        type: Array as PropType<Array<string>>,
+        type: Array as PropType<Array<{ name: string, value: any }>>,
         default: () => [],
     },
-    defaultItem: {
-        type: String,
+    defaultIndex: {
+        type: Number,
+        default: 0
     },
 })
 const emit = defineEmits(['select'])
 
-const selectItem = ref('')
+const selectIndex = ref(props.defaultIndex)
 const detailElement = ref<HTMLElement | null>(null)
-if (props.defaultItem) {
-    selectItem.value = props.defaultItem
-}
+
 
 function closeDetail() {
-    detailElement.value.removeAttribute('open')
+    detailElement.value && detailElement.value.removeAttribute('open')
 }
 
-function onSelect(item: string) {
-    selectItem.value = item
-    emit('select', selectItem.value)
+function onSelect(index: number) {
+    selectIndex.value = index
+    emit('select', props.items[index].value)
     closeDetail()
 }
 
