@@ -73,7 +73,6 @@
 <script setup lang="ts">
 import { repoUpdatedTime } from '@/shared/timeFormat'
 import { listRepo, listAllRepoLanguage } from '~~/api/repo';
-import { ListAllRepoLanguageResDto } from '~~/api/repo/listAllRepoLanguageDto';
 import { join } from '~~/shared/path';
 import { useAuth } from '~~/store/auth';
 
@@ -102,6 +101,29 @@ interface RepoInfo {
 
 const authStore = useAuth()
 const username = useRoute().params['username'] as string
+const keyword = ref('')
+const type = ref<undefined | RepoType>(undefined)
+const sort = ref<undefined | ListRepoSortType>(undefined)
+const language = ref<undefined | number>(undefined)
+const _keyword = useRoute().query['keyword']
+const _language = useRoute().query['language']
+const _type = useRoute().query['type']
+const _sort = useRoute().query['sort']
+
+
+// Number('') === 0需要排除。
+if (_keyword && typeof _keyword === 'string') {
+    keyword.value = _keyword
+}
+if (_type && typeof _type === 'string') {
+    type.value = Number(_type)
+}
+if (_sort && typeof _sort === 'string') {
+    sort.value = Number(_sort)
+}
+if (_language && typeof _language === 'string') {
+    language.value = Number(_language)
+}
 const isMyself = computed(() => {
     return authStore.info ? authStore.info.username === username : false
 })
@@ -153,7 +175,8 @@ async function fetchAllRepoLanguage() {
 }
 
 async function fetchListRepo() {
-    const { data, errMessage } = await listRepo(username, 1, 50)
+    // keyword === ''会导致查询条件为''无法查到数据。
+    const { data, errMessage } = await listRepo(username, 1, 50, undefined, type.value, sort.value, language.value, keyword.value === '' ? undefined : keyword.value)
     if (!errMessage) {
         repoList.value = data.repoList.map(repo => ({
             repoName: repo.repo_name,
@@ -171,14 +194,31 @@ async function fetchListRepo() {
 await useAsyncData(async () => await fetchListRepo())
 await useAsyncData(async () => await fetchAllRepoLanguage())
 
-function onSelectType(type: string) {
-    console.log(type)
+const $router = useRouter()
+
+async function replaceSearch(key: string, value: string | number | undefined) {
+    Reflect.deleteProperty($router.currentRoute.value.query, key)
+    await $router.replace({
+        path: $router.currentRoute.value.path,
+        query: {
+            [key]: value !== undefined ? value : '',
+            ...$router.currentRoute.value.query
+        }
+    })
+    fetchListRepo()
 }
-function onSelectLanguage(language: string) {
-    console.log(language)
+
+function onSelectType(value: RepoType) {
+    type.value = value
+    replaceSearch('type', value)
 }
-function onSelectSort(language: string) {
-    console.log(language)
+function onSelectLanguage(value: number) {
+    language.value = value
+    replaceSearch('language', value)
+}
+function onSelectSort(value: ListRepoSortType) {
+    sort.value = value
+    replaceSearch('sort', value)
 }
 
 function onToggleStar(isStar: boolean) {

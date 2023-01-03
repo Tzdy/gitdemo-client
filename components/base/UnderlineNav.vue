@@ -4,13 +4,13 @@
         <nav ref="navElement" class="UnderlineNav-body width-full p-responsive" aria-label="User profile">
             <!-- aria-current-value="false" 由于css中可以通过这个属性判断当前处于哪一个tab -->
             <!-- NuxtLink 处理aria-current-value的方法与css，实际情况不符合。所以直接强制为false -->
-            <NuxtLink v-for="item in navItems" :key="item.name" aria-current-value="false"
+            <span @click="onNavTo(item)" v-for="item in navItems" :key="item.name" aria-current-value="false"
                 :style="{ visibility: !item.visible ? 'hidden' : 'visible' }" :class="{ selected: item.selected, }"
-                class="UnderlineNav-item" :to="item.url">
+                class="UnderlineNav-item">
                 <BaseSvgIcon :name="item.icon" class="octicon UnderlineNav-octicon" :size="16" />
                 {{ item.name }}
                 <span v-show="item.number" class="Counter">{{ item.number }}</span>
-            </NuxtLink>
+            </span>
         </nav>
         <!-- 当屏幕变小后，补充显示。 -->
         <div class="position-absolute pr-3 pr-md-4 pr-lg-5 right-0 js-responsive-underlinenav-overflow"
@@ -26,8 +26,8 @@
                     <div role="menu" class="dropdown-menu dropdown-menu-sw">
                         <ul>
                             <li v-for="item in navItems" :hidden="item.visible" :key="item.name">
-                                <NuxtLink class="dropdown-item" :to="item.url">{{ item.name }}
-                                </NuxtLink>
+                                <span @click="onNavTo(item)" class="dropdown-item">{{ item.name }}
+                                </span>
                             </li>
                         </ul>
                     </div>
@@ -44,9 +44,12 @@ import { PropType } from 'vue';
 export interface UnderlineNavItem {
     name: string
     icon: string
-    url: string
+    query: string
     number?: number
+    // 自己点自己的时候，会不会清楚其他route query
+    replace?: boolean
 }
+const QUERY_NAME = 'tab'
 const navElement = ref<HTMLElement | null>(null)
 const props = defineProps({
     items: {
@@ -83,6 +86,24 @@ function switchTab() {
     })
 }
 
+const $router = useRouter()
+const username = useRoute().params.username as string
+function onNavTo(item: UnderlineNavItem) {
+    if (item.replace) {
+        if ($router.currentRoute.value.query[QUERY_NAME] === item.query) {
+            return;
+        }
+    }
+    const query: Record<string, string> = {}
+    if (item.query) {
+        query[QUERY_NAME] = item.query
+    }
+    $router.replace({
+        path: username,
+        query,
+    })
+}
+
 watch(toRef(props, 'selectedName'), () => {
     switchTab()
 })
@@ -93,4 +114,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
 </style>

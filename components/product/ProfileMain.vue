@@ -272,30 +272,31 @@ useRouter().afterEach((to, from) => {
 const navItems = reactive<UnderlineNavItem[]>([
     {
         name: 'Overview',
-        url: `${useRoute().params.username as string}`,
+        query: '',
         icon: 'overview',
     },
     {
         name: 'Repositories',
-        url: '?tab=repositories',
+        query: 'repositories',
         icon: 'repository',
         number: 18,
+        replace: true,
     },
     {
         name: 'Projects',
-        url: '?tab=projects',
+        query: 'projects',
         icon: 'projects',
         number: 0,
     },
     {
         name: 'Packages',
-        url: '?tab=packages',
+        query: 'packages',
         icon: 'packages',
         number: 0
     },
     {
         name: 'Stars',
-        url: '?tab=stars',
+        query: 'stars',
         icon: 'star',
         number: 0,
     },
