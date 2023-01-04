@@ -106,6 +106,8 @@ function onNavTo(item: UnderlineNavItem) {
 
 watch(toRef(props, 'selectedName'), () => {
     switchTab()
+}, {
+    immediate: true
 })
 
 onMounted(() => {
