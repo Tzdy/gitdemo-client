@@ -1,9 +1,8 @@
 export declare class TreeCommitItem {
-    username: string;
-    time: Date;
+    commitUser: string;
+    commitTime: Date;
     commitHash: string;
-    treeHash: string;
-    comment: string;
+    commitContent: string;
     type: 'blob' | 'tree';
     hash: string;
     name: string;

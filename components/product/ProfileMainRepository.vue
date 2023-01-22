@@ -47,12 +47,12 @@
                     </p>
                     <div class="f6 color-fg-muted mt-2">
                         <BaseLanguage v-if="repo.language" class="d-inline-block mr-3" :language="repo.language" />
-                        <NuxtLink v-show="repo.starNum" to="/Tzdy/Tsdy-module/stargazers"
+                        <NuxtLink v-show="repo.starNum" :to="join(repo.url, 'stargazers')"
                             class="Link--muted mr-3 no-wrap">
                             <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
                             <span>{{ repo.starNum }}</span>
                         </NuxtLink>
-                        <NuxtLink v-show="repo.forkNum" to="/Tzdy/Tsdy-module/network/members"
+                        <NuxtLink v-show="repo.forkNum" :to="join(repo.url, 'network/members')"
                             class="mr-3 Link--muted no-wrap">
                             <BaseSvgIcon name="fork" :size="16" class="octicon mr-1" />
                             <span>{{ repo.forkNum }}</span>

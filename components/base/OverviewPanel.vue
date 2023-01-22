@@ -25,8 +25,8 @@
                                     <span class="repo" :title="item.repoName">{{ item.repoName }}</span>
                                 </NuxtLink>
                                 <span class="Label Label--secondary v-align-middle mt-1 no-wrap Label--inline">{{
-        item.type
-}}</span>
+                                    item.type
+                                }}</span>
                             </div>
                             <span v-show="allowDrag" class="pl-2" title="Drag to reorder"
                                 @touchstart.prevent="touchStartHandler($event, index)" @touchmove="touchMoveHandler"
@@ -43,11 +43,11 @@
                         <p class="mb-0 mt-2 f6 color-fg-muted">
                             <BaseLanguage v-if="item.language" class="d-inline-block mr-3" :language="item.language" />
 
-                            <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted">
+                            <NuxtLink :to="join(item.url, 'stargazers')" class="Link--muted">
                                 <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
                                 <span>{{ item.starNum }}</span>
                             </NuxtLink>
-                            <NuxtLink to="/Tzdy/Tsdy-module/network/members" class="ml-3 Link--muted">
+                            <NuxtLink :to="join(item.url, '/network/members')" class="ml-3 Link--muted">
                                 <BaseSvgIcon name="fork" :size="16" class="octicon mr-1" />
                                 <span>{{ item.forkNum }}</span>
                             </NuxtLink>
@@ -69,8 +69,8 @@
                                 <span class="repo" :title="mobileDragItem.repoName">{{ mobileDragItem.repoName }}</span>
                             </NuxtLink>
                             <span class="Label Label--secondary v-align-middle mt-1 no-wrap Label--inline">{{
-        mobileDragItem.type
-}}</span>
+                                mobileDragItem.type
+                            }}</span>
                         </div>
                         <span class="pl-2" title="Drag to reorder">
                             <BaseSvgIcon style="cursor: grab" name="drag" :size="16" class="octicon" />
@@ -86,11 +86,11 @@
                         <BaseLanguage v-if="mobileDragItem.language" class="d-inline-block mr-3"
                             :language="mobileDragItem.language" />
 
-                        <NuxtLink to="/Tzdy/Tsdy-module/stargazers" class="Link--muted">
+                        <NuxtLink :to="join(mobileDragItem.url, 'stargazers')" class="Link--muted">
                             <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
                             <span>{{ mobileDragItem.starNum }}</span>
                         </NuxtLink>
-                        <NuxtLink to="/Tzdy/Tsdy-module/network/members" class="ml-3 Link--muted">
+                        <NuxtLink :to="join(mobileDragItem.url, '/network/members')" class="ml-3 Link--muted">
                             <BaseSvgIcon name="fork" :size="16" class="octicon mr-1" />
                             <span>{{ mobileDragItem.forkNum }}</span>
                         </NuxtLink>
@@ -103,6 +103,7 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue';
+import { join } from '~/shared/path'
 
 export interface Overview {
     id: number;
