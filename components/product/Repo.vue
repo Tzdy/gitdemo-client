@@ -39,16 +39,23 @@
 import type { BreadcrumbItem } from '@/components/base/BreadCrumb.vue'
 import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
 import { join } from '@/shared/path'
+import { useAuth } from '~~/store/auth';
+const authStore = useAuth()
+const username = useRoute().params.username as string
+const reponame = useRoute().params.reponame as string
+const isMyself = computed(() => {
+    return authStore.info && authStore.info.username === username
+})
 const breadcrumbItems = reactive<BreadcrumbItem[]>([
     {
-        name: 'Tsdy',
-        url: '/Tsdy',
+        name: username,
+        url: `/${username}`,
         selected: false,
         strong: false,
     },
     {
-        name: 'Tsdy-Module',
-        url: '/Tsdy/Tsdy-Module',
+        name: reponame,
+        url: join(`/${username}`, reponame),
         selected: true,
         strong: true,
     }

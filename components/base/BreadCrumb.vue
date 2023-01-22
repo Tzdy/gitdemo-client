@@ -4,9 +4,9 @@
             <li v-for="item in items" :key="item.name" :class="{ 'breadcrumb-item-selected': !!item.selected }"
                 class="breadcrumb-item">
                 <strong v-if="!!item.strong">
-                    <a :href="item.url">{{ item.name }}</a>
+                    <NuxtLink :href="item.url">{{ item.name }}</NuxtLink>
                 </strong>
-                <a v-else :href="item.url">{{ item.name }}</a>
+                <NuxtLink v-else :href="item.url">{{ item.name }}</NuxtLink>
             </li>
         </ol>
     </nav>
