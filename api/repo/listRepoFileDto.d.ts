@@ -1,3 +1,4 @@
+import { HttpResponse } from '../HttpResponse';
 export declare class TreeCommitItem {
     commitUser: string;
     commitTime: Date;
@@ -17,8 +18,7 @@ export declare class ListRepoFileReqDto {
 declare class ResData {
     list: Array<TreeCommitItem>;
 }
-export declare class ListRepoFileResDto {
-    code: number;
+export declare class ListRepoFileResDto extends HttpResponse {
     data: ResData;
 }
 export {};

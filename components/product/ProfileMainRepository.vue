@@ -179,15 +179,15 @@ async function fetchListRepo() {
     const { data, errMessage } = await listRepo(username, 1, 50, undefined, type.value, sort.value, language.value, keyword.value === '' ? undefined : keyword.value)
     if (!errMessage) {
         repoList.value = data.repoList.map(repo => ({
-            repoName: repo.repo_name,
-            url: join(username, repo.repo_name),
+            repoName: repo.repoName,
+            url: join(username, repo.repoName),
             about: repo.about,
             type: repo.type === 0 ? 'Public' : 'Private',
             language: repo.language,
-            sortIndex: repo.is_overview,
-            starNum: repo.star_num,
+            sortIndex: repo.isOverview,
+            starNum: repo.starNum,
             forkNum: 0,
-            updatedTime: repo.update_time,
+            updatedTime: repo.updateTime,
         }))
     }
 }

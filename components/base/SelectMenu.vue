@@ -1,5 +1,5 @@
 <template>
-    <details class="details-reset details-overlay" ref="detailElement">
+    <details class="details-reset details-overlay position-relative" ref="detailElement">
         <summary class="btn" role="button">
             <span>{{ title }}</span>
             <span class="dropdown-caret"></span>
@@ -54,7 +54,7 @@ function closeDetail() {
 
 function onSelect(index: number) {
     selectIndex.value = index
-    emit('select', props.items[index].value)
+    emit('select', props.items[index])
     closeDetail()
 }
 

@@ -1,3 +1,4 @@
+import { HttpResponse } from '../HttpResponse';
 import { RepoType } from './share';
 export declare class SetRepoReqDto {
     repoId: number;
@@ -8,7 +9,5 @@ export declare class SetRepoReqDto {
     languageId?: number;
     isOverview?: number;
 }
-export declare class SetRepoResDto {
-    code: number;
-    message: string;
+export declare class SetRepoResDto extends HttpResponse {
 }

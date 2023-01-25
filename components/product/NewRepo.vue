@@ -13,7 +13,7 @@
                     <div class="form-group-header">
                         <label>Owner</label>
                     </div>
-                    <BaseSelectMenu @select="onSelectUser" :title="selectUser" :default-item="userList[0]"
+                    <BaseSelectMenu @select="onSelectUser" :title="selectUser.name" :default-item="userList[0]"
                         :items="userList" />
                 </div>
                 <span class="f2 mx-2" style="vertical-align: sub;">/</span>
@@ -71,15 +71,18 @@ enum RepoType {
 
 const authStore = useAuth()
 
-const userList = ref<Array<string>>([])
+const userList = ref<Array<{ name: string, value: string }>>([])
 
-userList.value.push(authStore.info!.nickname)
+userList.value.push({
+    name: authStore.info!.nickname,
+    value: authStore.info!.username,
+})
 
-const selectUser = ref<string>(userList.value[0])
+const selectUser = ref<{ name: string, value: string }>(userList.value[0])
 const repoName = ref('')
 const repoType = ref<RepoType>(RepoType.PUBLIC)
 const repoAbout = ref('')
-function onSelectUser(user: string) {
+function onSelectUser(user: { name: string, value: string }) {
     selectUser.value = user
 }
 

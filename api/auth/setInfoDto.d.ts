@@ -1,3 +1,4 @@
+import { HttpResponse } from '../HttpResponse';
 export declare class SetInfoReqDto {
     nickname?: string;
     bio?: string;
@@ -6,7 +7,5 @@ export declare class SetInfoReqDto {
     twitter?: string;
     org?: string;
 }
-export declare class SetInfoResDto {
-    code: number;
-    message: string;
+export declare class SetInfoResDto extends HttpResponse {
 }

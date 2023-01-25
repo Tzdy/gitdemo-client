@@ -153,28 +153,27 @@ function switchTab(tab: string[] | string | undefined) {
     }
 }
 const tabName = ref('')
-switchTab(useRoute().query.tab)
-console.log(tabName.value)
+switchTab(useRoute().query.tab as string)
 useRouter().afterEach((to, from) => {
     if (to.path === from.path) {
-        switchTab(to.query.tab)
+        switchTab(to.query.tab as string)
     }
 })
 const navItems = reactive<UnderlineNavItem[]>([
     {
         name: 'Code',
-        url: `${useRoute().params.reponame as string}`,
+        query: '',
         icon: 'code',
     },
     {
         name: 'Issues',
-        url: '?tab=issues',
+        query: 'issues',
         icon: 'issue',
         number: 18,
     },
     {
         name: 'Pull Request',
-        url: '?tab=pull request',
+        query: 'pull request',
         icon: 'pullrequest',
         number: 0,
     },

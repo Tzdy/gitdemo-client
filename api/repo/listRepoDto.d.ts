@@ -1,4 +1,5 @@
-import { RepoType } from './share';
+import { HttpResponse } from '../HttpResponse';
+import { RepoDto, RepoType } from './share';
 export declare enum ListRepoSortType {
     LAST_UPDATE = 0,
     NAME = 1,
@@ -14,23 +15,10 @@ export declare class ListRepoReqDto {
     keyword?: string;
     isOverview?: boolean;
 }
-export declare class RepoDto {
-    id: number;
-    type: RepoType;
-    repo_name: string;
-    create_time: number;
-    star_num: number;
-    is_overview: number;
-    about: string;
-    update_time: number;
-    language: string;
-}
 declare class ListRepoResData {
     repoList: Array<RepoDto>;
 }
-export declare class ListRepoResDto {
-    code: number;
-    message: string;
+export declare class ListRepoResDto extends HttpResponse {
     data: ListRepoResData;
 }
 export {};

@@ -1,3 +1,4 @@
+import { HttpResponse } from '../HttpResponse';
 export declare class ListAllRepoLanguageReqDto {
     username: string;
 }
@@ -8,7 +9,7 @@ declare class LanguageItem {
 declare class ResData {
     languageList: Array<LanguageItem>;
 }
-export declare class ListAllRepoLanguageResDto {
+export declare class ListAllRepoLanguageResDto extends HttpResponse {
     data: ResData;
 }
 export {};

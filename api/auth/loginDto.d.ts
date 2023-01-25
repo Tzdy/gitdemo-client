@@ -1,3 +1,4 @@
+import { HttpResponse } from '../HttpResponse';
 export declare class LoginReqDto {
     username: string;
     password: string;
@@ -5,8 +6,7 @@ export declare class LoginReqDto {
 declare class LoginResData {
     token: string;
 }
-export declare class LoginResDto {
-    code: number;
+export declare class LoginResDto extends HttpResponse {
     data?: LoginResData;
 }
 export {};

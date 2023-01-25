@@ -64,13 +64,13 @@ const overviewList = computed<Overview[]>(() => {
     }
     return repoList.value.map(repo => ({
         id: repo.id,
-        repoName: repo.repo_name,
-        url: join(username, repo.repo_name),
+        repoName: repo.repoName,
+        url: join(username, repo.repoName),
         about: repo.about,
         type: repo.type === 0 ? 'Public' : 'Private',
         language: repo.language,
-        sortIndex: repo.is_overview,
-        starNum: repo.star_num,
+        sortIndex: repo.isOverview,
+        starNum: repo.starNum,
         forkNum: 0,
     }))
 })
@@ -82,13 +82,13 @@ async function onOpenChangeOverview() {
     const list: Overview[] = []
     !(await fetchAllRepo())?.map(repo => ({
         id: repo.id,
-        repoName: repo.repo_name,
-        url: join(username, repo.repo_name),
+        repoName: repo.repoName,
+        url: join(username, repo.repoName),
         about: repo.about,
         type: (repo.type === 0 ? 'Public' : 'Private') as 'Public' | 'Private',
         language: repo.language,
-        sortIndex: repo.is_overview,
-        starNum: repo.star_num,
+        sortIndex: repo.isOverview,
+        starNum: repo.starNum,
         forkNum: 0,
     })).forEach(item => {
         if (item.sortIndex !== 0) {
