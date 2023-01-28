@@ -38,18 +38,18 @@ export const useAuth = defineStore("auth", {
   actions: {
     async login(username: string, password: string) {
       const cookie = useCookie("token");
-      const { data, errMessage } = await login(username, password);
+      const { response, errMessage } = await login(username, password);
       if (!errMessage) {
-        this.token = data.token;
+        this.token = response.data.token;
         cookie.value = this.token;
       }
       return errMessage;
     },
     async getInfo() {
       const token = useCookie("token");
-      const { data, errMessage } = await getInfo();
+      const { response, errMessage } = await getInfo();
       if (!errMessage) {
-        this.info = data.info;
+        this.info = response.data.info;
       } else {
         token.value = "";
       }

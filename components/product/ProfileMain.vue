@@ -168,10 +168,10 @@ function onUploadAvatar() {
         if (input.files) {
             formData.set('avatar', input.files[0])
         }
-        const { data, errMessage } = await uploadAvatar(formData)
+        const { response, errMessage } = await uploadAvatar(formData)
         if (!errMessage) {
-            avatarVersion.value = data.v
-            authStore.info && (authStore.info.avatar_version = data.v)
+            avatarVersion.value = response.data.v
+            authStore.info && (authStore.info.avatar_version = response.data.v)
         }
     }
     input.click()
@@ -184,9 +184,9 @@ const isMyself = computed(() => {
     return authStore.info && authStore.info.username === username
 })
 async function fetchUserInfo() {
-    const { data, errMessage } = await getOtherInfo(username)
+    const { response, errMessage } = await getOtherInfo(username)
     if (!errMessage) {
-        return data.info
+        return response.data.info
     }
 }
 

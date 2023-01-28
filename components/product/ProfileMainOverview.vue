@@ -34,23 +34,23 @@ const isMyself = computed(() => {
 
 
 async function fetchOverview() {
-    const { errMessage, data } = await listRepo(username, 1, 6, true, 0)
+    const { errMessage, response } = await listRepo(username, 1, 6, true, 0)
     if (!errMessage) {
-        return data.repoList
+        return response.data.repoList
     }
 }
 
 async function fetchRepo() {
-    const { errMessage, data } = await listRepo(username, 1, 50, false, 0)
+    const { errMessage, response } = await listRepo(username, 1, 50, false, 0)
     if (!errMessage) {
-        return data.repoList
+        return response.data.repoList
     }
 }
 
 async function fetchAllRepo() {
-    const { errMessage, data } = await listRepo(username, 1, 50, undefined, 0)
+    const { errMessage, response } = await listRepo(username, 1, 50, undefined, 0)
     if (!errMessage) {
-        return data.repoList
+        return response.data.repoList
     }
 }
 

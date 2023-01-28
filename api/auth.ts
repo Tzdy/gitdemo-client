@@ -17,7 +17,7 @@ export function login(username: string, password: string) {
 
 export function getInfo() {
   const token = useCookie("token");
-  return clientRequest<InfoResDto["data"]>(() =>
+  return clientRequest<InfoResDto>(() =>
     useFetch("/api/auth/info", {
       method: "post",
       headers: {
@@ -29,7 +29,7 @@ export function getInfo() {
 
 export function getOtherInfo(username: string) {
   const token = useCookie("token");
-  return clientRequest<InfoResDto["data"]>(() =>
+  return clientRequest<InfoResDto>(() =>
     useFetch("/api/auth/other_info", {
       method: "post",
       body: {
@@ -54,7 +54,7 @@ export function setInfo(info: SetInfoReqDto) {
 
 export function uploadAvatar(formData: FormData) {
   const token = useCookie("token");
-  return clientRequest<UploadAvatarResDto["data"]>(() =>
+  return clientRequest<UploadAvatarResDto>(() =>
     useFetch("/api/auth/upload_info_avatar", {
       method: "post",
       headers: {

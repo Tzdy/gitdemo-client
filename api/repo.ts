@@ -1,12 +1,21 @@
 import { useAuth } from "~~/store/auth";
+import { CatRepoFileReqDto, CatRepoFileResDto } from "./repo/catRepoFileDto";
 import { CreateRepoReqDto } from "./repo/createRepoDto";
+import {
+  GetOneRepoCommitReqDto,
+  GetOneRepoCommitResDto,
+} from "./repo/getOneRepoCommit";
+import { GetOneRepoReqDto, GetOneRepoResDto } from "./repo/getOneRepoDto";
 import {
   ListAllRepoLanguageReqDto,
   ListAllRepoLanguageResDto,
 } from "./repo/listAllRepoLanguageDto";
 import { ListRepoResDto } from "./repo/listRepoDto";
+import { ListRepoFileReqDto, ListRepoFileResDto } from "./repo/listRepoFileDto";
+import { ListRepoRefReqDto, ListRepoRefResDto } from "./repo/listRepoRefDto";
 import { SetRepoReqDto, SetRepoResDto } from "./repo/setRepoDto";
 import { RepoType } from "./repo/share";
+import { ToggleStarReqDto, ToggleStarResDto } from "./repo/toggleStarDto";
 import clientRequest from "./share";
 export function listRepo(
   username: string,
@@ -22,7 +31,7 @@ export function listRepo(
   const headers: HeadersInit = {};
   username === authStore.info?.username &&
     (headers["authorization"] = authStore.token);
-  return clientRequest<ListRepoResDto["data"]>(() =>
+  return clientRequest<ListRepoResDto>(() =>
     useFetch("/api/repo/list_repo", {
       method: "post",
       headers,
@@ -45,7 +54,7 @@ export function listAllRepoLanguage(username: string) {
   const headers: HeadersInit = {};
   username === authStore.info?.username &&
     (headers["authorization"] = authStore.token);
-  return clientRequest<ListAllRepoLanguageResDto["data"]>(() =>
+  return clientRequest<ListAllRepoLanguageResDto>(() =>
     useFetch("/api/repo/list_all_repo_language", {
       method: "post",
       headers,
@@ -98,6 +107,84 @@ export function createRepo(repoName: string, type: RepoType, about: string) {
         type,
         about,
       } as CreateRepoReqDto,
+    })
+  );
+}
+
+export function listRepoFile(body: ListRepoFileReqDto) {
+  const token = useCookie("token");
+  return clientRequest<ListRepoFileResDto>(() =>
+    useFetch("/api/repo/list_repo_file", {
+      method: "post",
+      headers: {
+        authorization: token.value || "",
+      },
+      body,
+    })
+  );
+}
+
+export function catRepoFile(body: CatRepoFileReqDto) {
+  const token = useCookie("token");
+  return clientRequest<CatRepoFileResDto>(() =>
+    useFetch("/api/repo/cat_repo_file", {
+      method: "post",
+      headers: {
+        authorization: token.value || "",
+      },
+      body,
+    })
+  );
+}
+
+export function getOneRepoCommit(body: GetOneRepoCommitReqDto) {
+  const token = useCookie("token");
+  return clientRequest<GetOneRepoCommitResDto>(() =>
+    useFetch("/api/repo/get_one_repo_commit", {
+      method: "post",
+      headers: {
+        authorization: token.value || "",
+      },
+      body,
+    })
+  );
+}
+
+export function getOneRepo(body: GetOneRepoReqDto) {
+  const token = useCookie("token");
+  return clientRequest<GetOneRepoResDto>(() =>
+    useFetch("/api/repo/get_one_repo", {
+      method: "post",
+      headers: {
+        authorization: token.value || "",
+      },
+      body,
+    })
+  );
+}
+
+export function listRepoRef(body: ListRepoRefReqDto) {
+  const token = useCookie("token");
+  return clientRequest<ListRepoRefResDto>(() =>
+    useFetch("/api/repo/list_repo_ref", {
+      method: "post",
+      headers: {
+        authorization: token.value || "",
+      },
+      body,
+    })
+  );
+}
+
+export function toggleRepoStar(body: ToggleStarReqDto) {
+  const token = useCookie("token");
+  return clientRequest<void>(() =>
+    useFetch("/api/repo/toggle_repo_star", {
+      method: "post",
+      headers: {
+        authorization: token.value || "",
+      },
+      body,
     })
   );
 }

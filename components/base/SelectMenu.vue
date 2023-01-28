@@ -29,12 +29,14 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 
+export interface SelectMenuItem { name: string, value: any }
+
 const props = defineProps({
     title: {
         type: String,
     },
     items: {
-        type: Array as PropType<Array<{ name: string, value: any }>>,
+        type: Array as PropType<Array<SelectMenuItem>>,
         default: () => [],
     },
     defaultIndex: {

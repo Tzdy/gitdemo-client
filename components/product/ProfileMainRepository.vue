@@ -75,6 +75,7 @@ import { repoUpdatedTime } from '@/shared/timeFormat'
 import { listRepo, listAllRepoLanguage } from '~~/api/repo';
 import { join } from '~~/shared/path';
 import { useAuth } from '~~/store/auth';
+import { SelectMenuItem } from '../base/SelectMenu.vue';
 
 enum RepoType {
     PUBLIC = 0,
@@ -161,9 +162,9 @@ const repoList = ref<RepoInfo[]>()
 const selectRepoLanguage = ref<{ name: string, value: any }[]>([])
 
 async function fetchAllRepoLanguage() {
-    const { data, errMessage } = await listAllRepoLanguage(username)
+    const { response, errMessage } = await listAllRepoLanguage(username)
     if (!errMessage) {
-        selectRepoLanguage.value = data.languageList.map(item => ({
+        selectRepoLanguage.value = response.data.languageList.map(item => ({
             name: item.name,
             value: item.id,
         }))
@@ -176,9 +177,9 @@ async function fetchAllRepoLanguage() {
 
 async function fetchListRepo() {
     // keyword === ''会导致查询条件为''无法查到数据。
-    const { data, errMessage } = await listRepo(username, 1, 50, undefined, type.value, sort.value, language.value, keyword.value === '' ? undefined : keyword.value)
+    const { response, errMessage } = await listRepo(username, 1, 50, undefined, type.value, sort.value, language.value, keyword.value === '' ? undefined : keyword.value)
     if (!errMessage) {
-        repoList.value = data.repoList.map(repo => ({
+        repoList.value = response.data.repoList.map(repo => ({
             repoName: repo.repoName,
             url: join(username, repo.repoName),
             about: repo.about,
@@ -208,17 +209,17 @@ async function replaceSearch(key: string, value: string | number | undefined) {
     fetchListRepo()
 }
 
-function onSelectType(value: RepoType) {
-    type.value = value
-    replaceSearch('type', value)
+function onSelectType(item: SelectMenuItem) {
+    type.value = item.value
+    replaceSearch('type', item.value)
 }
-function onSelectLanguage(value: number) {
-    language.value = value
-    replaceSearch('language', value)
+function onSelectLanguage(item: SelectMenuItem) {
+    language.value = item.value
+    replaceSearch('language', item.value)
 }
-function onSelectSort(value: ListRepoSortType) {
-    sort.value = value
-    replaceSearch('sort', value)
+function onSelectSort(item: SelectMenuItem) {
+    sort.value = item.value
+    replaceSearch('sort', item.value)
 }
 
 function onToggleStar(isStar: boolean) {
