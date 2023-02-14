@@ -1,157 +1,155 @@
 <template>
     <!-- main -->
-    <div class="clearfix container-xl px-3 px-md-4 px-lg-5 mt-4">
-        <div class="Layout Layout--flowRow-until-md Layout--sidebarPosition-end Layout--sidebarPosition-flowRow-end">
-            <!-- left -->
-            <div class="Layout-main">
-                <!-- select branch, clone repo -->
-                <div class="file-navigation mb-3 d-flex flex-items-start">
-                    <BaseSelectBranchMenu :branch-list="repoInfo.branchList" :tag-list="repoInfo.tagList"
-                        :select-name="repoInfo.selectName" :select-type="repoInfo.selectType"
-                        :default-name="repoInfo.defaultName" :default-type="repoInfo.defaultType" />
-                    <div
-                        class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
-                        <NuxtLink :to="join(useRoute().path, 'branches')" class="Link--primary no-underline">
-                            <BaseSvgIcon name="branch" :size="16" class="octicon mr-1" />
-                            <strong class="mr-1">{{ repoInfo.branchList.length }}</strong>
-                            <span class="color-fg-muted">branches</span>
-                        </NuxtLink>
-                    </div>
-                    <div
-                        class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
-                        <NuxtLink :to="join(useRoute().path, 'tags')" class="Link--primary no-underline">
-                            <BaseSvgIcon name="tag" :size="16" class="octicon mr-1" />
-                            <strong class="mr-1">{{ repoInfo.tagList.length }}</strong>
-                            <span class="color-fg-muted">tags</span>
-                        </NuxtLink>
-                    </div>
-                    <div class="flex-auto"></div>
-
-                    <BaseSelectCloneMenu :https-url="repoInfo.httpsUrl" :ssh-url="repoInfo.sshUrl" />
-                </div>
-                <!-- repo list -->
-                <BaseDirectory :branch="repoInfo.branch" :directories="directory" :latest-commit="repoInfo.latestCommit"
-                    :commit-num="repoInfo.commitNum" :reponame="useRoute().params.reponame + ''"
-                    :username="useRoute().params.username + ''" :path="(useRoute().params.path as string[])" />
-                <!-- README -->
-                <BaseMarkdown />
-            </div>
-            <!-- right -->
-            <div class="Layout-sidebar">
-                <div class="hide-sm hide-md py-4 mt-n4 border-bottom color-border-muted">
-                    <h2 class="mb-3 h4">About</h2>
-                    <!-- description -->
-                    <p class="f4 my-3">{{ repoInfo.description }}</p>
-                    <!-- link -->
-                    <div class="my-3 d-flex flex-items-center">
-                        <BaseSvgIcon name="link" :size="16" class="octicon flex-shrink-0 mr-2" />
-                        <span class="flex-auto min-width-0 css-truncate css-truncate-target width-fit">
-                            <NuxtLink class="text-bold" :to="repoInfo.link" target="_blank">{{ repoInfo.link }}
-                            </NuxtLink>
-                        </span>
-                    </div>
-                    <!-- topic tags -->
-                    <div class="my-3 f6">
-                        <NuxtLink v-for="topicTag in repoInfo.topicTagList" :key="topicTag"
-                            class="mr-1 no-underline topic-tag" :to="`/topics/${topicTag}`">{{ topicTag }}
-                        </NuxtLink>
-                    </div>
-                    <!-- Readme -->
-                    <div class="mt-2">
-                        <NuxtLink to="#readme" class="Link--muted">
-                            <BaseSvgIcon name="book" :size="16" class="octicon mr-2" />
-                            <span>Readme</span>
-                        </NuxtLink>
-                    </div>
-                    <!-- license -->
-                    <div class="mt-2">
-                        <NuxtLink :to="join(useRoute().path, `blob/${repoInfo.branch}/LICENSE`)" class="Link--muted">
-                            <BaseSvgIcon name="law" :size="16" class="octicon mr-2" />
-                            <span>{{ repoInfo.license }}</span>
-                        </NuxtLink>
-                    </div>
-                    <!-- stars -->
-                    <div class="mt-2">
-                        <NuxtLink :to="join(useRoute().path, `stargazers`)" class="Link--muted">
-                            <BaseSvgIcon name="star" :size="16" class="octicon mr-2" />
-                            <strong class="mr-1">{{ repoInfo.starNum }}</strong>
-                            <span>stars</span>
-                        </NuxtLink>
-                    </div>
-                    <!-- watch -->
-                    <div class="mt-2">
-                        <NuxtLink :to="join(useRoute().path, `watchers`)" class="Link--muted">
-                            <BaseSvgIcon name="eye" :size="16" class="octicon mr-2" />
-                            <strong class="mr-1">{{ repoInfo.watchNum }}</strong>
-                            <span>watching</span>
-                        </NuxtLink>
-                    </div>
-                    <!-- forks -->
-                    <div class="mt-2">
-                        <NuxtLink :to="join(useRoute().path, `forks`)" class="Link--muted">
-                            <BaseSvgIcon name="fork" :size="16" class="octicon mr-2" />
-                            <strong class="mr-1">{{ repoInfo.forkNum }}</strong>
-                            <span>forks</span>
-                        </NuxtLink>
-                    </div>
-                </div>
-                <!-- release box -->
-                <div class="border-bottom color-border-muted py-4">
-                    <h2 class="h4 mb-3">
-                        <NuxtLink class="Link--primary no-underline" :to="join(useRoute().path, 'releases')">
-                            <span>Releases</span>
-                            <span class="Counter">{{ repoInfo.release.length }}</span>
-                        </NuxtLink>
-                    </h2>
-                    <NuxtLink class="Link--primary d-flex no-underline"
-                        :to="join(useRoute().path, `releases/tags/${repoInfo.release.latestRelease.name}`)">
-                        <BaseSvgIcon name="tag" :size="16" class="octicon flex-shrink-0 mt-1 color-fg-success" />
-                        <div class="ml-2 min-width-0">
-                            <div class="d-flex">
-                                <span class="css-truncate css-truncate-target text-bold mr-2">
-                                    {{ repoInfo.release.latestRelease.name }}
-                                </span>
-                                <span class="Label Label--success flex-shrink-0">Latest</span>
-                            </div>
-                            <div class="text-small color-fg-muted">
-                                <span class="no-wrap">{{ repoInfo.release.latestRelease.date }}</span>
-                            </div>
-                        </div>
+    <div class="Layout Layout--flowRow-until-md Layout--sidebarPosition-end Layout--sidebarPosition-flowRow-end">
+        <!-- left -->
+        <div class="Layout-main">
+            <!-- select branch, clone repo -->
+            <div class="file-navigation mb-3 d-flex flex-items-start">
+                <BaseSelectBranchMenu :branch-list="repoInfo.branchList" :tag-list="repoInfo.tagList"
+                    :select-name="repoInfo.selectName" :select-type="repoInfo.selectType"
+                    :default-name="repoInfo.defaultName" :default-type="repoInfo.defaultType" />
+                <div
+                    class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
+                    <NuxtLink :to="join(useRoute().path, 'branches')" class="Link--primary no-underline">
+                        <BaseSvgIcon name="branch" :size="16" class="octicon mr-1" />
+                        <strong class="mr-1">{{ repoInfo.branchList.length }}</strong>
+                        <span class="color-fg-muted">branches</span>
                     </NuxtLink>
-                    <div v-show="repoInfo.release.length > 1" class="mt-3">
-                        <NuxtLink :to="join(useRoute().path, 'releases')">
-                            <span class="mr-1">+ {{ repoInfo.release.length - 1 }} releases</span>
+                </div>
+                <div
+                    class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
+                    <NuxtLink :to="join(useRoute().path, 'tags')" class="Link--primary no-underline">
+                        <BaseSvgIcon name="tag" :size="16" class="octicon mr-1" />
+                        <strong class="mr-1">{{ repoInfo.tagList.length }}</strong>
+                        <span class="color-fg-muted">tags</span>
+                    </NuxtLink>
+                </div>
+                <div class="flex-auto"></div>
+
+                <BaseSelectCloneMenu :https-url="repoInfo.httpsUrl" :ssh-url="repoInfo.sshUrl" />
+            </div>
+            <!-- repo list -->
+            <BaseDirectory :branch="repoInfo.branch" :directories="directory" :latest-commit="repoInfo.latestCommit"
+                :commit-num="repoInfo.commitNum" :reponame="useRoute().params.reponame + ''"
+                :username="useRoute().params.username + ''" :path="(useRoute().params.path as string[])" />
+            <!-- README -->
+            <BaseMarkdown />
+        </div>
+        <!-- right -->
+        <div class="Layout-sidebar">
+            <div class="hide-sm hide-md py-4 mt-n4 border-bottom color-border-muted">
+                <h2 class="mb-3 h4">About</h2>
+                <!-- description -->
+                <p class="f4 my-3">{{ repoInfo.description }}</p>
+                <!-- link -->
+                <div class="my-3 d-flex flex-items-center">
+                    <BaseSvgIcon name="link" :size="16" class="octicon flex-shrink-0 mr-2" />
+                    <span class="flex-auto min-width-0 css-truncate css-truncate-target width-fit">
+                        <NuxtLink class="text-bold" :to="repoInfo.link" target="_blank">{{ repoInfo.link }}
                         </NuxtLink>
+                    </span>
+                </div>
+                <!-- topic tags -->
+                <div class="my-3 f6">
+                    <NuxtLink v-for="topicTag in repoInfo.topicTagList" :key="topicTag"
+                        class="mr-1 no-underline topic-tag" :to="`/topics/${topicTag}`">{{ topicTag }}
+                    </NuxtLink>
+                </div>
+                <!-- Readme -->
+                <div class="mt-2">
+                    <NuxtLink to="#readme" class="Link--muted">
+                        <BaseSvgIcon name="book" :size="16" class="octicon mr-2" />
+                        <span>Readme</span>
+                    </NuxtLink>
+                </div>
+                <!-- license -->
+                <div class="mt-2">
+                    <NuxtLink :to="join(useRoute().path, `blob/${repoInfo.branch}/LICENSE`)" class="Link--muted">
+                        <BaseSvgIcon name="law" :size="16" class="octicon mr-2" />
+                        <span>{{ repoInfo.license }}</span>
+                    </NuxtLink>
+                </div>
+                <!-- stars -->
+                <div class="mt-2">
+                    <NuxtLink :to="join(useRoute().path, `stargazers`)" class="Link--muted">
+                        <BaseSvgIcon name="star" :size="16" class="octicon mr-2" />
+                        <strong class="mr-1">{{ repoInfo.starNum }}</strong>
+                        <span>stars</span>
+                    </NuxtLink>
+                </div>
+                <!-- watch -->
+                <div class="mt-2">
+                    <NuxtLink :to="join(useRoute().path, `watchers`)" class="Link--muted">
+                        <BaseSvgIcon name="eye" :size="16" class="octicon mr-2" />
+                        <strong class="mr-1">{{ repoInfo.watchNum }}</strong>
+                        <span>watching</span>
+                    </NuxtLink>
+                </div>
+                <!-- forks -->
+                <div class="mt-2">
+                    <NuxtLink :to="join(useRoute().path, `forks`)" class="Link--muted">
+                        <BaseSvgIcon name="fork" :size="16" class="octicon mr-2" />
+                        <strong class="mr-1">{{ repoInfo.forkNum }}</strong>
+                        <span>forks</span>
+                    </NuxtLink>
+                </div>
+            </div>
+            <!-- release box -->
+            <div class="border-bottom color-border-muted py-4">
+                <h2 class="h4 mb-3">
+                    <NuxtLink class="Link--primary no-underline" :to="join(useRoute().path, 'releases')">
+                        <span>Releases</span>
+                        <span class="Counter">{{ repoInfo.release.length }}</span>
+                    </NuxtLink>
+                </h2>
+                <NuxtLink class="Link--primary d-flex no-underline"
+                    :to="join(useRoute().path, `releases/tags/${repoInfo.release.latestRelease.name}`)">
+                    <BaseSvgIcon name="tag" :size="16" class="octicon flex-shrink-0 mt-1 color-fg-success" />
+                    <div class="ml-2 min-width-0">
+                        <div class="d-flex">
+                            <span class="css-truncate css-truncate-target text-bold mr-2">
+                                {{ repoInfo.release.latestRelease.name }}
+                            </span>
+                            <span class="Label Label--success flex-shrink-0">Latest</span>
+                        </div>
+                        <div class="text-small color-fg-muted">
+                            <span class="no-wrap">{{ repoInfo.release.latestRelease.date }}</span>
+                        </div>
                     </div>
+                </NuxtLink>
+                <div v-show="repoInfo.release.length > 1" class="mt-3">
+                    <NuxtLink :to="join(useRoute().path, 'releases')">
+                        <span class="mr-1">+ {{ repoInfo.release.length - 1 }} releases</span>
+                    </NuxtLink>
                 </div>
-                <!-- Contributors -->
-                <div class="border-bottom color-border-muted py-4">
-                    <h2 class="h4 mb-3">
-                        <NuxtLink :to="join(useRoute().path, 'contributors')" class="Link--primary no-underline">
-                            <span>Contributors</span>
-                            <span class="Counter">{{ repoInfo.contributor.length }}</span>
+            </div>
+            <!-- Contributors -->
+            <div class="border-bottom color-border-muted py-4">
+                <h2 class="h4 mb-3">
+                    <NuxtLink :to="join(useRoute().path, 'contributors')" class="Link--primary no-underline">
+                        <span>Contributors</span>
+                        <span class="Counter">{{ repoInfo.contributor.length }}</span>
+                    </NuxtLink>
+                </h2>
+                <ul class="list-style-none d-flex flex-wrap mb-n2">
+                    <li v-for="item in repoInfo.contributor.topArray" :key="item.name" class="mb-2 mr-2">
+                        <NuxtLink :to="`/${item.name}`">
+                            <img width="32" height="32" :src="item.avatar" class="avatar circle" alt="">
                         </NuxtLink>
-                    </h2>
-                    <ul class="list-style-none d-flex flex-wrap mb-n2">
-                        <li v-for="item in repoInfo.contributor.topArray" :key="item.name" class="mb-2 mr-2">
-                            <NuxtLink :to="`/${item.name}`">
-                                <img width="32" height="32" :src="item.avatar" class="avatar circle" alt="">
-                            </NuxtLink>
-                        </li>
-                    </ul>
-                    <div v-show="repoInfo.release.length > 11" class="mt-3">
-                        <NuxtLink :to="join(useRoute().path, 'contributors')">
-                            <span class="mr-1">+ {{ repoInfo.release.length - 11 }} contributors</span>
-                        </NuxtLink>
-                    </div>
+                    </li>
+                </ul>
+                <div v-show="repoInfo.release.length > 11" class="mt-3">
+                    <NuxtLink :to="join(useRoute().path, 'contributors')">
+                        <span class="mr-1">+ {{ repoInfo.release.length - 11 }} contributors</span>
+                    </NuxtLink>
                 </div>
-                <!-- language -->
-                <div class="py-4">
-                    <h2 class="h4 mb-3">
-                        Languages
-                    </h2>
-                    <BaseLanguageProgress :items="repoInfo.languageList" />
-                </div>
+            </div>
+            <!-- language -->
+            <div class="py-4">
+                <h2 class="h4 mb-3">
+                    Languages
+                </h2>
+                <BaseLanguageProgress :items="repoInfo.languageList" />
             </div>
         </div>
     </div>

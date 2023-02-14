@@ -7,3 +7,7 @@ export function join(a: string, b: string) {
   }
   return a + "/" + b;
 }
+
+export function gitHttpPath(username: string, repoName: string) {
+  return join(useRuntimeConfig().public.gitBase, `${username}/${repoName}.git`);
+}

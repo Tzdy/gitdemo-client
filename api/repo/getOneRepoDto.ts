@@ -11,6 +11,7 @@ export class GetOneRepoReqDto {
 }
 class Data extends RepoDto {
   website: string;
+  defaultBranchName: string;
   languageAnalysis: LanguageItem[];
 }
 export class GetOneRepoResDto extends HttpResponse {

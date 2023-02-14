@@ -140,7 +140,7 @@ export function catRepoFile(body: CatRepoFileReqDto) {
 export function getOneRepoCommit(body: GetOneRepoCommitReqDto) {
   const token = useCookie("token");
   return clientRequest<GetOneRepoCommitResDto>(() =>
-    useFetch("/api/repo/get_one_repo_commit", {
+    useFetch("/api/repo/get_one_latest_commit", {
       method: "post",
       headers: {
         authorization: token.value || "",

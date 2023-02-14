@@ -32,8 +32,7 @@
                         <span class="flex-1 css-truncate css-truncate-overflow">
                             <BaseSearchStrongText :text="branch" :strong-text="filterText" />
                         </span>
-                        <span class="Label Label--secondary"
-                            v-if="branch === defaultName && defaultType === 'branch'">default</span>
+                        <span class="Label Label--secondary" v-if="branch === defaultName">default</span>
                     </a>
                     <div class="SelectMenu-message" v-show="branchFilter().length === 0">Nothing to show</div>
                 </div>
@@ -45,8 +44,6 @@
                         <span class="flex-1 css-truncate css-truncate-overflow">
                             <BaseSearchStrongText :text="tag" :strong-text="filterText" />
                         </span>
-                        <span class="Label Label--secondary"
-                            v-if="tag === defaultName && defaultType === 'tag'">default</span>
                     </a>
                     <div class="SelectMenu-message" v-show="tagFilter().length === 0">Nothing to show</div>
                 </div>
@@ -66,10 +63,6 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    defaultType: {
-        type: String as PropType<'tag' | 'branch'>,
-        required: true,
-    },
     defaultName: {
         type: String,
         required: true,
@@ -83,12 +76,14 @@ const props = defineProps({
         default: () => []
     }
 })
+const emit = defineEmits(['switch-tab'])
 const details = ref<HTMLElement | null>(null)
 const { close: onCloseDetails } = useDetailsElement(details)
 const tabName = ref<'branch' | 'tag'>('branch')
 const filterText = ref('')
 function switchTab(tab: 'branch' | 'tag') {
     tabName.value = tab
+    emit('switch-tab', tab)
 }
 function branchFilter() {
     return props.branchList.filter(branch => branch.includes(filterText.value))
@@ -100,4 +95,5 @@ function tagFilter() {
 </script>
 
 <style scoped>
+
 </style>

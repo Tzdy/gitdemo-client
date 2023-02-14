@@ -33,12 +33,11 @@
 
 <script setup lang="ts">
 import Markdown from 'markdown-it'
-import { md } from './markdown'
 const markdown = Markdown()
 const props = defineProps({
     data: {
         type: String,
-        default: md
+        default: ''
     }
 })
 const html = ref('')

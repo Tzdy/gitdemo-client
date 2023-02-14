@@ -29,7 +29,7 @@
                         </NuxtLink>
                         <NuxtLink :to="`/${username}/${reponame}/commit/${latestCommit.hash}`"
                             class="Link--secondary ml-2">
-                            {{ latestCommit.date }}
+                            {{ latestCommit.createTime }}
                         </NuxtLink>
                     </div>
                 </div>
@@ -96,7 +96,7 @@ export interface LatestCommit {
     content: string
     hash: string
     username: string
-    date: string
+    createTime: Date
 }
 
 export interface DirectoryItem {

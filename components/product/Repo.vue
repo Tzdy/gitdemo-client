@@ -31,9 +31,12 @@
             <BaseUnderlineNav :items="navItems" :selected-name="tabName" />
         </div>
         <!-- main -->
-        <ProductRepoMain v-if="!$route.params.type" />
-        <ProductRepoTree v-else-if="$route.params.type === 'tree'" />
-        <ProductRepoBlob v-else-if="$route.params.type === 'blob'" />
+        <div v-if="repoInfo" class="clearfix container-xl px-3 px-md-4 px-lg-5 mt-4">
+            <ProductRepoEmpty v-if="!repoInfo.defaultBranchName" />
+            <ProductRepoMain v-else-if="!$route.params.type" />
+            <ProductRepoTree v-else-if="$route.params.type === 'tree'" />
+            <ProductRepoBlob v-else-if="$route.params.type === 'blob'" />
+        </div>
     </BaseContainer>
 </template>
 
@@ -47,6 +50,7 @@ import { useRepo } from '~~/store/repo';
 const authStore = useAuth()
 const username = useRoute().params.username as string
 const reponame = useRoute().params.reponame as string
+const refName = (useRoute().params.branch || '') as string
 const isMyself = computed(() => {
     return authStore.info && authStore.info.username === username
 })
@@ -67,7 +71,8 @@ const breadcrumbItems = reactive<BreadcrumbItem[]>([
 const repoStore = useRepo()
 const repoInfo = computed(() => repoStore.repoInfo)
 
-useAsyncData(() => repoStore.fetchRepo(username, reponame))
+await useAsyncData(() => repoStore.fetchRepo(username, reponame, refName))
+useAsyncData(() => repoStore.fetchLatestCommit(username, reponame, refName))
 
 // const repoInfo = ref({
 //     branch: 'master',
@@ -186,21 +191,6 @@ const navItems = reactive<UnderlineNavItem[]>([
         icon: 'pullrequest',
         number: 0,
     },
-])
-
-const directory = reactive([
-    {
-        type: 'tree' as 'tree' | 'blob',
-        name: 'src',
-        time: '16 days ago',
-        latestCommitContent: 'chore: add feature request template ('
-    },
-    {
-        type: 'blob' as 'tree' | 'blob',
-        name: '.gitignore',
-        time: '24 days ago',
-        latestCommitContent: 'chore: request template ('
-    }
 ])
 
 </script>
