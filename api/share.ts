@@ -15,6 +15,9 @@ export default async function clientRequest<DTO>(
       errMessage = "server error.";
     }
   }
+  if (data.value.code !== 20000) {
+    errMessage = data.value.message;
+  }
   return {
     response: data.value,
     errMessage,

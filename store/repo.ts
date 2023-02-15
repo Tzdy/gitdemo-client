@@ -25,6 +25,7 @@ export const useRepo = defineStore("repo", {
     latestCommit: null as null | GetOneRepoCommitResDto["data"],
   }),
   actions: {
+    // 先获取仓库信息。
     async fetchRepo(username: string, repoName: string, refName: string) {
       const { response, errMessage } = await getOneRepo({
         repoName,
@@ -35,25 +36,28 @@ export const useRepo = defineStore("repo", {
         // 当url中没有refName时，使用默认分支名
         if (this.repoInfo.defaultBranchName && refName === "") {
           this.refName = this.repoInfo.defaultBranchName;
+        } else {
+          this.refName = refName;
         }
       }
     },
-
-    async fetchLatestCommit(
-      username: string,
-      repoName: string,
-      refName: string
-    ) {
+    // 获取最新commit，同时判断该分支存不存在。
+    async fetchLatestCommit(username: string, repoName: string) {
       if (!this.repoInfo?.defaultBranchName) {
         return;
       }
       const { response, errMessage } = await getOneRepoCommit({
         username,
         repoName,
-        branch: refName,
+        branch: this.refName,
       });
       if (!errMessage) {
         this.latestCommit = response.data;
+      } else {
+        await navigateTo({
+          name: "404",
+          replace: true,
+        });
       }
     },
 

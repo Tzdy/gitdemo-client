@@ -3,7 +3,7 @@
     <div class="file-navigation mb-3 d-flex flex-items-start">
         <BaseSelectBranchMenu v-if="repoInfo?.defaultBranchName" :branch-list="branchList" :tag-list="tagList"
             :select-name="repoStore.refName" select-type="branch" :default-name="repoInfo.defaultBranchName"
-            default-type="branch" />
+            default-type="branch" @switch-tab="onSwitchTab" @open="onOpen" />
         <div class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
             <NuxtLink :to="join(useRoute().path, 'branches')" class="Link--primary no-underline">
                 <BaseSvgIcon name="branch" :size="16" class="octicon mr-1" />
@@ -33,7 +33,10 @@
 <script setup lang="ts">
 import { join } from '@/shared/path'
 import { useRepo } from '@/store/repo'
+import { RefType } from '~~/api/repo/listRepoRefDto';
 const repoStore = useRepo()
+const username = useRoute().params.username as string
+const reponame = useRoute().params.reponame as string
 const repoInfo = computed(() => repoStore.repoInfo)
 const branchList = computed(() => repoStore.repoRef.branchList.map(item => item.name))
 const tagList = computed(() => repoStore.repoRef.tagList.map(item => item.name))
@@ -55,6 +58,17 @@ const latestCommit = computed(() => {
         return commit
     }
 })
+
+function onOpen() {
+    repoStore.fetchRef(username, reponame, RefType.BRANCH)
+}
+
+function onSwitchTab(tabName: string) {
+    if (tabName === 'tag') {
+        repoStore.fetchRef(username, reponame, RefType.TAG)
+    }
+}
+
 // const repoInfo = ref({
 //     branch: 'master',
 //     type: 'Public',

@@ -1,6 +1,6 @@
 <template>
     <details ref="details" class="details-reset details-overlay mr-0 mb-0 ">
-        <summary class="btn css-truncate">
+        <summary @click="onOpen" class="btn css-truncate">
             <BaseSvgIcon name="branch" :size="16" class="octicon" />
             <span class="css-truncate-target">{{ selectName }}</span>
             <span class="dropdown-caret"></span>
@@ -76,9 +76,9 @@ const props = defineProps({
         default: () => []
     }
 })
-const emit = defineEmits(['switch-tab'])
+const emit = defineEmits(['switch-tab', 'open'])
 const details = ref<HTMLElement | null>(null)
-const { close: onCloseDetails } = useDetailsElement(details)
+const { close } = useDetailsElement(details)
 const tabName = ref<'branch' | 'tag'>('branch')
 const filterText = ref('')
 function switchTab(tab: 'branch' | 'tag') {
@@ -91,6 +91,14 @@ function branchFilter() {
 
 function tagFilter() {
     return props.tagList.filter(tag => tag.includes(filterText.value))
+}
+
+function onOpen() {
+    emit('open')
+}
+
+function onCloseDetails() {
+    close()
 }
 </script>
 

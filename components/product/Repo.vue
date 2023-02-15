@@ -72,7 +72,7 @@ const repoStore = useRepo()
 const repoInfo = computed(() => repoStore.repoInfo)
 
 await useAsyncData(() => repoStore.fetchRepo(username, reponame, refName))
-useAsyncData(() => repoStore.fetchLatestCommit(username, reponame, refName))
+await useAsyncData(() => repoStore.fetchLatestCommit(username, reponame))
 
 // const repoInfo = ref({
 //     branch: 'master',
