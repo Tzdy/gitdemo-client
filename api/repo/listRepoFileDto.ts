@@ -1,7 +1,7 @@
 import { HttpResponse } from '../HttpResponse';
 export class TreeCommitItem {
   commitUser: string;
-  commitTime: Date;
+  commitTime: string;
   commitHash: string;
   commitContent: string;
   type: 'blob' | 'tree';

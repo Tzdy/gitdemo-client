@@ -12,6 +12,7 @@ class Data {
   hash: string;
   content: string;
   createTime: number;
+  totalCommitNum: number;
 }
 export class GetOneRepoCommitResDto extends HttpResponse {
   data: Data;

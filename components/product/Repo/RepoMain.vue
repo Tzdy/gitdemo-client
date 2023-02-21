@@ -1,37 +1,36 @@
 <template>
-    <!-- main -->
-    <div class="Layout Layout--flowRow-until-md Layout--sidebarPosition-end Layout--sidebarPosition-flowRow-end">
+    <div v-if="repoInfo"
+        class="Layout Layout--flowRow-until-md Layout--sidebarPosition-end Layout--sidebarPosition-flowRow-end">
         <!-- left -->
         <div class="Layout-main">
             <!-- select branch, clone repo -->
             <div class="file-navigation mb-3 d-flex flex-items-start">
-                <BaseSelectBranchMenu :branch-list="repoInfo.branchList" :tag-list="repoInfo.tagList"
-                    :select-name="repoInfo.selectName" :select-type="repoInfo.selectType"
-                    :default-name="repoInfo.defaultName" :default-type="repoInfo.defaultType" />
-                <div
-                    class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
+                <BaseSelectBranchMenu v-if="repoInfo?.defaultBranchName" :branch-list="branchList" :tag-list="tagList"
+                    :select-name="repoStore.refName" select-type="branch" :default-name="repoInfo.defaultBranchName"
+                    default-type="branch" @switch-tab="onSwitchTab" @open="onOpen" />
+                <div class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
                     <NuxtLink :to="join(useRoute().path, 'branches')" class="Link--primary no-underline">
                         <BaseSvgIcon name="branch" :size="16" class="octicon mr-1" />
-                        <strong class="mr-1">{{ repoInfo.branchList.length }}</strong>
+                        <strong class="mr-1">{{ branchList.length }}</strong>
                         <span class="color-fg-muted">branches</span>
                     </NuxtLink>
                 </div>
-                <div
-                    class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
+                <div class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
                     <NuxtLink :to="join(useRoute().path, 'tags')" class="Link--primary no-underline">
                         <BaseSvgIcon name="tag" :size="16" class="octicon mr-1" />
-                        <strong class="mr-1">{{ repoInfo.tagList.length }}</strong>
+                        <strong class="mr-1">{{ tagList.length }}</strong>
                         <span class="color-fg-muted">tags</span>
                     </NuxtLink>
                 </div>
                 <div class="flex-auto"></div>
 
-                <BaseSelectCloneMenu :https-url="repoInfo.httpsUrl" :ssh-url="repoInfo.sshUrl" />
+                <BaseSelectCloneMenu :https-url="cloneHttpUrl" :ssh-url="cloneSSHUrl" />
             </div>
             <!-- repo list -->
-            <BaseDirectory :branch="repoInfo.branch" :directories="directory" :latest-commit="repoInfo.latestCommit"
-                :commit-num="repoInfo.commitNum" :reponame="useRoute().params.reponame + ''"
-                :username="useRoute().params.username + ''" :path="(useRoute().params.path as string[])" />
+            <BaseDirectory v-if="latestCommit && directory" :branch="repoStore.refName" :directories="directory"
+                :latest-commit="latestCommit" :commit-num="latestCommit.totalCommitNum"
+                :reponame="useRoute().params.reponame + ''" :username="useRoute().params.username + ''"
+                :path="(useRoute().params.path as string[])" />
             <!-- README -->
             <BaseMarkdown />
         </div>
@@ -40,21 +39,21 @@
             <div class="hide-sm hide-md py-4 mt-n4 border-bottom color-border-muted">
                 <h2 class="mb-3 h4">About</h2>
                 <!-- description -->
-                <p class="f4 my-3">{{ repoInfo.description }}</p>
+                <p class="f4 my-3">{{ repoInfo.about }}</p>
                 <!-- link -->
                 <div class="my-3 d-flex flex-items-center">
                     <BaseSvgIcon name="link" :size="16" class="octicon flex-shrink-0 mr-2" />
                     <span class="flex-auto min-width-0 css-truncate css-truncate-target width-fit">
-                        <NuxtLink class="text-bold" :to="repoInfo.link" target="_blank">{{ repoInfo.link }}
+                        <NuxtLink class="text-bold" :to="repoInfo.website" target="_blank">{{ repoInfo.website }}
                         </NuxtLink>
                     </span>
                 </div>
                 <!-- topic tags -->
-                <div class="my-3 f6">
+                <!-- <div class="my-3 f6">
                     <NuxtLink v-for="topicTag in repoInfo.topicTagList" :key="topicTag"
                         class="mr-1 no-underline topic-tag" :to="`/topics/${topicTag}`">{{ topicTag }}
                     </NuxtLink>
-                </div>
+                </div> -->
                 <!-- Readme -->
                 <div class="mt-2">
                     <NuxtLink to="#readme" class="Link--muted">
@@ -63,12 +62,12 @@
                     </NuxtLink>
                 </div>
                 <!-- license -->
-                <div class="mt-2">
+                <!-- <div class="mt-2">
                     <NuxtLink :to="join(useRoute().path, `blob/${repoInfo.branch}/LICENSE`)" class="Link--muted">
                         <BaseSvgIcon name="law" :size="16" class="octicon mr-2" />
                         <span>{{ repoInfo.license }}</span>
                     </NuxtLink>
-                </div>
+                </div> -->
                 <!-- stars -->
                 <div class="mt-2">
                     <NuxtLink :to="join(useRoute().path, `stargazers`)" class="Link--muted">
@@ -78,31 +77,31 @@
                     </NuxtLink>
                 </div>
                 <!-- watch -->
-                <div class="mt-2">
+                <!-- <div class="mt-2">
                     <NuxtLink :to="join(useRoute().path, `watchers`)" class="Link--muted">
                         <BaseSvgIcon name="eye" :size="16" class="octicon mr-2" />
                         <strong class="mr-1">{{ repoInfo.watchNum }}</strong>
                         <span>watching</span>
                     </NuxtLink>
-                </div>
+                </div> -->
                 <!-- forks -->
-                <div class="mt-2">
+                <!-- <div class="mt-2">
                     <NuxtLink :to="join(useRoute().path, `forks`)" class="Link--muted">
                         <BaseSvgIcon name="fork" :size="16" class="octicon mr-2" />
                         <strong class="mr-1">{{ repoInfo.forkNum }}</strong>
                         <span>forks</span>
                     </NuxtLink>
-                </div>
+                </div> -->
             </div>
             <!-- release box -->
             <div class="border-bottom color-border-muted py-4">
                 <h2 class="h4 mb-3">
-                    <NuxtLink class="Link--primary no-underline" :to="join(useRoute().path, 'releases')">
+                    <!-- <NuxtLink class="Link--primary no-underline" :to="join(useRoute().path, 'releases')">
                         <span>Releases</span>
                         <span class="Counter">{{ repoInfo.release.length }}</span>
-                    </NuxtLink>
+                    </NuxtLink> -->
                 </h2>
-                <NuxtLink class="Link--primary d-flex no-underline"
+                <!-- <NuxtLink class="Link--primary d-flex no-underline"
                     :to="join(useRoute().path, `releases/tags/${repoInfo.release.latestRelease.name}`)">
                     <BaseSvgIcon name="tag" :size="16" class="octicon flex-shrink-0 mt-1 color-fg-success" />
                     <div class="ml-2 min-width-0">
@@ -121,10 +120,10 @@
                     <NuxtLink :to="join(useRoute().path, 'releases')">
                         <span class="mr-1">+ {{ repoInfo.release.length - 1 }} releases</span>
                     </NuxtLink>
-                </div>
+                </div> -->
             </div>
             <!-- Contributors -->
-            <div class="border-bottom color-border-muted py-4">
+            <!-- <div class="border-bottom color-border-muted py-4">
                 <h2 class="h4 mb-3">
                     <NuxtLink :to="join(useRoute().path, 'contributors')" class="Link--primary no-underline">
                         <span>Contributors</span>
@@ -143,13 +142,13 @@
                         <span class="mr-1">+ {{ repoInfo.release.length - 11 }} contributors</span>
                     </NuxtLink>
                 </div>
-            </div>
+            </div> -->
             <!-- language -->
-            <div class="py-4">
+            <div v-if="languageAnalysis" class="py-4">
                 <h2 class="h4 mb-3">
                     Languages
                 </h2>
-                <BaseLanguageProgress :items="repoInfo.languageList" />
+                <BaseLanguageProgress :items="languageAnalysis" />
             </div>
         </div>
     </div>
@@ -159,6 +158,65 @@
 import type { BreadcrumbItem } from '@/components/base/BreadCrumb.vue'
 import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
 import { join } from '@/shared/path'
+import { useRepo } from '@/store/repo'
+import { listRepoFile } from '~~/api/repo';
+import { RefType } from '~~/api/repo/listRepoRefDto';
+import { DirectoryItem } from '~~/components/base/Directory.vue';
+const repoStore = useRepo()
+const username = useRoute().params.username as string
+const reponame = useRoute().params.reponame as string
+const path = useRoute().params.path as string[]
+const repoInfo = computed(() => repoStore.repoInfo)
+const branchList = computed(() => repoStore.repoRef.branchList.map(item => item.name))
+const tagList = computed(() => repoStore.repoRef.tagList.map(item => item.name))
+const latestCommit = computed(() => {
+    if (!repoStore.latestCommit) {
+        return null
+    } else {
+        const { createTime, ...res } = repoStore.latestCommit
+        const commit = {
+            avatar: '',
+            createTime: new Date(createTime),
+            ...res
+        }
+        if (repoStore.latestCommit.userId) {
+            commit.avatar = join(useRuntimeConfig().app.baseURL,
+                "/api/public/avatar?id=" +
+                repoStore.latestCommit.userId)
+        }
+        return commit
+    }
+})
+
+// clone url
+const cloneHttpUrl = computed(() => join(useRuntimeConfig().public.gitBase, `${username}/${reponame}.git`))
+const cloneSSHUrl = computed(() => '')
+function onOpen() {
+    repoStore.fetchRef(username, reponame, RefType.BRANCH)
+}
+
+function onSwitchTab(tabName: string) {
+    if (tabName === 'tag') {
+        repoStore.fetchRef(username, reponame, RefType.TAG)
+    }
+}
+
+// 语言分析
+const languageAnalysis = computed(() => {
+    if (repoInfo.value) {
+        const sumFile = repoInfo.value.languageAnalysis.reduce((a, b) => {
+            return a + b.fileNum
+        }, 0)
+        return repoInfo.value.languageAnalysis.map(item => {
+            return {
+                name: item.language,
+                percentage: item.fileNum / sumFile
+            }
+        })
+    }
+    return null
+})
+
 const breadcrumbItems = reactive<BreadcrumbItem[]>([
     {
         name: 'Tsdy',
@@ -174,83 +232,81 @@ const breadcrumbItems = reactive<BreadcrumbItem[]>([
     }
 ])
 
-
-
-const repoInfo = ref({
-    branch: 'master',
-    type: 'Public',
-    httpsUrl: 'https://github.com/swc-project/website.git',
-    sshUrl: 'git@github.com:swc-project/website.git',
-    isStar: false,
-    isWatch: false,
-    isOverview: false,
-    starNum: 100,
-    watchNum: 20,
-    forkNum: 1,
-    branchList: [
-        'master',
-        'dev'
-    ],
-    tagList: [
-        'v1',
-        'v2',
-        'v3'
-    ],
-    selectType: 'branch' as 'branch' | 'tag',
-    selectName: 'master',
-    defaultName: 'master',
-    defaultType: 'branch' as 'branch' | 'tag',
-    latestCommit: {
-        username: 'Tsdy',
-        avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy',
-        content: 'docs: make wording slightly clearer ',
-        hash: '9ef270915996195f40def244a33845449f67dbe9',
-        date: '2 hours ago'
-    },
-    commitNum: 2003,
-    description: 'The Hybrid Vue(3) Framework.',
-    link: 'https://v3.nuxtjs.org',
-    topicTagList: ["framework", 'nuxt', 'vue'],
-    license: 'MIT license',
-    release: {
-        latestRelease: {
-            name: 'v3.0.0-rc.8',
-            date: '8 days ago',
-        },
-        length: 8,
-    },
-    contributor: {
-        topArray: [
-            {
-                name: 'Tsdy',
-                avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy'
-            },
-            {
-                name: 'Cyc',
-                avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy'
-            }
-        ],
-        length: 251,
-    },
-    languageList: [
-        {
-            name: 'javascript',
-            percentage: 0.5,
-        },
-        {
-            name: 'typescript',
-            percentage: 0.2,
-        },
-        {
-            name: 'vue',
-            percentage: 0.2
-        },
-        {
-            name: 'css',
-            percentage: 0.1
-        }
-    ]
-})
+// const repoInfo = ref({
+//     branch: 'master',
+//     type: 'Public',
+//     httpsUrl: 'https://github.com/swc-project/website.git',
+//     sshUrl: 'git@github.com:swc-project/website.git',
+//     isStar: false,
+//     isWatch: false,
+//     isOverview: false,
+//     starNum: 100,
+//     watchNum: 20,
+//     forkNum: 1,
+//     branchList: [
+//         'master',
+//         'dev'
+//     ],
+//     tagList: [
+//         'v1',
+//         'v2',
+//         'v3'
+//     ],
+//     selectType: 'branch' as 'branch' | 'tag',
+//     selectName: 'master',
+//     defaultName: 'master',
+//     defaultType: 'branch' as 'branch' | 'tag',
+//     latestCommit: {
+//         username: 'Tsdy',
+//         avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy',
+//         content: 'docs: make wording slightly clearer ',
+//         hash: '9ef270915996195f40def244a33845449f67dbe9',
+//         date: '2 hours ago'
+//     },
+//     commitNum: 2003,
+//     description: 'The Hybrid Vue(3) Framework.',
+//     link: 'https://v3.nuxtjs.org',
+//     topicTagList: ["framework", 'nuxt', 'vue'],
+//     license: 'MIT license',
+//     release: {
+//         latestRelease: {
+//             name: 'v3.0.0-rc.8',
+//             date: '8 days ago',
+//         },
+//         length: 8,
+//     },
+//     contributor: {
+//         topArray: [
+//             {
+//                 name: 'Tsdy',
+//                 avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy'
+//             },
+//             {
+//                 name: 'Cyc',
+//                 avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy'
+//             }
+//         ],
+//         length: 251,
+//     },
+//     languageList: [
+//         {
+//             name: 'javascript',
+//             percentage: 0.5,
+//         },
+//         {
+//             name: 'typescript',
+//             percentage: 0.2,
+//         },
+//         {
+//             name: 'vue',
+//             percentage: 0.2
+//         },
+//         {
+//             name: 'css',
+//             percentage: 0.1
+//         }
+//     ]
+// })
 
 
 function onTogglePin(val: boolean, done: Function, err: Function) {
@@ -298,20 +354,43 @@ const navItems = reactive<UnderlineNavItem[]>([
     },
 ])
 
-const directory = reactive([
-    {
-        type: 'tree' as 'tree' | 'blob',
-        name: 'src',
-        time: '16 days ago',
-        latestCommitContent: 'chore: add feature request template ('
-    },
-    {
-        type: 'blob' as 'tree' | 'blob',
-        name: '.gitignore',
-        time: '24 days ago',
-        latestCommitContent: 'chore: request template ('
+// const directory = reactive([
+//     {
+//         type: 'tree' as 'tree' | 'blob',
+//         name: 'src',
+//         time: '16 days ago',
+//         latestCommitContent: 'chore: add feature request template ('
+//     },
+//     {
+//         type: 'blob' as 'tree' | 'blob',
+//         name: '.gitignore',
+//         time: '24 days ago',
+//         latestCommitContent: 'chore: request template ('
+//     }
+// ])
+
+const directory = ref<DirectoryItem[] | null>(null)
+
+async function fetchRepoFileList() {
+    const { response, errMessage } = await listRepoFile({
+        branch: repoStore.refName,
+        repoName: reponame,
+        username,
+    })
+    if (!errMessage) {
+        directory.value = response.data.list.map(item => {
+            return {
+                type: item.type,
+                name: item.name,
+                time: item.commitTime,
+                latestCommitContent: item.commitContent,
+            }
+        })
+        // response.data.list[0].
     }
-])
+}
+
+useAsyncData(() => fetchRepoFileList())
 
 </script>
 
