@@ -8,7 +8,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "/api",
-      gitBase: process.env.NUXT_GIT_PATH,
+      gitBase: process.env.NUXT_PUBLIC_GIT_BASE || "/git",
+      // NUXT_PUBLIC前缀也要加。
+      // gitBase 和 GIT_BASE必须一致，还需要保证 加上 || "/git" 不然部署后不能读取环境变量
     },
   },
   typescript: {
