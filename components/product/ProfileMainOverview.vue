@@ -2,8 +2,8 @@
     <div class="position-relative">
         <div class="mt-4">
             <div>
-                <BaseSelectOverviewPanel @submit="onSubmitChangeOverview" @open="onOpenChangeOverview"
-                    :visible="isMyself" :repo-list="allRepoList" />
+                <BaseSelectOverviewPanel @submit="onSubmitChangeOverview" @open="onOpenChangeOverview" :visible="isMyself"
+                    :repo-list="allRepoList" />
                 <BaseOverviewPanel @change="onChangeOverviewSort" :allow-drag="!!isMyself" :overviews="overviewList" />
             </div>
         </div>

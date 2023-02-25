@@ -4,7 +4,7 @@
             :select-name="repoStore.refName" select-type="branch" :default-name="repoInfo.defaultBranchName"
             default-type="branch" @switch-tab="onSwitchTab" @open="onOpen" />
         <div class="flex-self-center ml-3 flex-self-stretch d-none d-lg-flex flex-items-center lh-condensed-ultra">
-            <NuxtLink :to="join(useRoute().path, 'branches')" class="Link--primary no-underline">
+            <NuxtLink :to="join(username, reponame, 'branches')" class="Link--primary no-underline">
                 <BaseSvgIcon name="branch" :size="16" class="octicon mr-1" />
                 <strong class="mr-1">{{ branchList.length }}</strong>
                 <span class="color-fg-muted">branches</span>
@@ -159,6 +159,7 @@ function onSwitchTab(tabName: string) {
 const directory = ref<DirectoryItem[] | null>(null);
 console.log(path)
 async function fetchRepoFileList() {
+    console.log(path)
     const { response, errMessage } = await listRepoFile({
         branch: repoStore.refName,
         repoName: reponame,
@@ -178,7 +179,7 @@ async function fetchRepoFileList() {
     }
 }
 
-useAsyncData(() => fetchRepoFileList());
+fetchRepoFileList()
 </script>
 
 <style scoped>

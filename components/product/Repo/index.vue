@@ -51,6 +51,7 @@ const authStore = useAuth()
 const username = useRoute().params.username as string
 const reponame = useRoute().params.reponame as string
 const refName = (useRoute().params.branch || '') as string
+console.log(useRoute().params.type)
 const isMyself = computed(() => {
     return authStore.info && authStore.info.username === username
 })
@@ -70,9 +71,8 @@ const breadcrumbItems = reactive<BreadcrumbItem[]>([
 ])
 const repoStore = useRepo()
 const repoInfo = computed(() => repoStore.repoInfo)
-
-await useAsyncData(() => repoStore.fetchRepo(username, reponame, refName))
-await useAsyncData(() => repoStore.fetchLatestCommit(username, reponame))
+await repoStore.fetchRepo(username, reponame, refName)
+await repoStore.fetchLatestCommit(username, reponame)
 
 // const repoInfo = ref({
 //     branch: 'master',

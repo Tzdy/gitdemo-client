@@ -27,6 +27,7 @@ export const useRepo = defineStore("repo", {
   actions: {
     // 先获取仓库信息。
     async fetchRepo(username: string, repoName: string, refName: string) {
+      this.repoInfo = null;
       const { response, errMessage } = await getOneRepo({
         repoName,
         username,

@@ -2,7 +2,7 @@
     <BaseContainer>
         <!-- tabbar -->
         <div class="mt-4 position-sticky top-0 d-none d-md-block color-bg-default width-full border-bottom
-    color-border-muted" style="z-index:3;">
+                    color-border-muted" style="z-index:3;">
             <div class="container-xl px-3 px-md-4 px-lg-5">
                 <div
                     class="Layout Layout--flowRow-until-md Layout--sidebarPosition-start Layout--sidebarPosition-flowRow-start">
@@ -70,8 +70,8 @@
                                     </div>
                                     <div class="color-fg-muted mt-2 d-flex flex-items-center">
                                         <BaseSvgIcon class="octicon" name="position" :size="16" />
-                                        <input class="ml-2 form-control flex-auto input-sm"
-                                            v-model="userInfoEdit.address" placeholder="Position">
+                                        <input class="ml-2 form-control flex-auto input-sm" v-model="userInfoEdit.address"
+                                            placeholder="Position">
                                     </div>
                                     <div class="color-fg-muted mt-2 d-flex flex-items-center">
                                         <BaseSvgIcon class="octicon" name="link" :size="16" />
@@ -80,8 +80,8 @@
                                     </div>
                                     <div class="color-fg-muted mt-2 d-flex flex-items-center">
                                         <BaseSvgIcon class="octicon" name="twitter" :size="16" />
-                                        <input class="ml-2 form-control flex-auto input-sm"
-                                            v-model="userInfoEdit.twitter" placeholder="Twitter">
+                                        <input class="ml-2 form-control flex-auto input-sm" v-model="userInfoEdit.twitter"
+                                            placeholder="Twitter">
                                     </div>
                                     <div class="my-3">
                                         <!-- error options -->
@@ -111,8 +111,7 @@
                                             </span>
                                         </li>
                                         <li v-show="userInfo.address" class="width-full pt-1 hide-sm hide-md">
-                                            <BaseSvgIcon class="octicon mr-2 color-fg-muted" name="position"
-                                                :size="16" />
+                                            <BaseSvgIcon class="octicon mr-2 color-fg-muted" name="position" :size="16" />
                                             <span>
                                                 {{ userInfo.address }}
                                             </span>
@@ -123,8 +122,7 @@
                                                 {{ userInfo.link }}</NuxtLink>
                                         </li>
                                         <li v-show="userInfo.twitter" class="width-full pt-1 hide-sm hide-md">
-                                            <BaseSvgIcon class="octicon mr-2 color-fg-muted" name="twitter"
-                                                :size="16" />
+                                            <BaseSvgIcon class="octicon mr-2 color-fg-muted" name="twitter" :size="16" />
                                             <NuxtLink class="Link--primary" target="_blink"
                                                 :to="'https://twitter.com/' + userInfo.twitter">@{{ userInfo.twitter }}
                                             </NuxtLink>
@@ -154,7 +152,7 @@
 <script setup lang="ts">
 import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
 import { getOtherInfo, uploadAvatar, setInfo } from '~~/api/auth';
-import { join } from '~~/shared/path';
+import { resolve } from '~~/shared/path';
 import { useAuth } from '~~/store/auth';
 
 function onUploadAvatar() {
@@ -252,7 +250,7 @@ const avatarUrl = computed(() => {
     if (!userInfo.value) {
         return ''
     }
-    return join(useRuntimeConfig().app.baseURL, '/api/public/avatar?id=' + userInfo.value.id + '&v=' + avatarVersion.value)
+    return resolve('/api/public/avatar?id=' + userInfo.value.id + '&v=' + avatarVersion.value)
 })
 
 function switchTab(tab: string[] | string | undefined) {
@@ -304,6 +302,4 @@ const navItems = reactive<UnderlineNavItem[]>([
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

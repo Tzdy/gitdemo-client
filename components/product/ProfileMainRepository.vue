@@ -38,7 +38,7 @@
                 class="col-12 d-flex flex-justify-between width-full py-4 border-bottom color-border-muted">
                 <div class="col-10 col-lg-9 d-inline-block">
                     <h3 class="wb-break-all">
-                        <NuxtLink :to="repo.url" itemprop="name codeRepository">
+                        <NuxtLink :to="join(username, repo.repoName)" itemprop="name codeRepository">
                             {{ repo.repoName }}</NuxtLink>
                         <span class="Label Label--secondary v-align-middle ml-1 mb-1">{{ repo.type }}</span>
                     </h3>
@@ -47,12 +47,12 @@
                     </p>
                     <div class="f6 color-fg-muted mt-2">
                         <BaseLanguage v-if="repo.language" class="d-inline-block mr-3" :language="repo.language" />
-                        <NuxtLink v-show="repo.starNum" :to="join(repo.url, 'stargazers')"
+                        <NuxtLink v-show="repo.starNum" :to="join(username, repo.repoName, 'stargazers')"
                             class="Link--muted mr-3 no-wrap">
                             <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
                             <span>{{ repo.starNum }}</span>
                         </NuxtLink>
-                        <NuxtLink v-show="repo.forkNum" :to="join(repo.url, 'network/members')"
+                        <NuxtLink v-show="repo.forkNum" :to="join(username, repo.repoName, 'network/members')"
                             class="mr-3 Link--muted no-wrap">
                             <BaseSvgIcon name="fork" :size="16" class="octicon mr-1" />
                             <span>{{ repo.forkNum }}</span>
@@ -91,7 +91,6 @@ enum ListRepoSortType {
 interface RepoInfo {
     repoName: string;
     type: 'Public' | 'Private',
-    url: string;
     about: string,
     language: string,
     updatedTime: number,
@@ -181,7 +180,6 @@ async function fetchListRepo() {
     if (!errMessage) {
         repoList.value = response.data.repoList.map(repo => ({
             repoName: repo.repoName,
-            url: join(username, repo.repoName),
             about: repo.about,
             type: repo.type === 0 ? 'Public' : 'Private',
             language: repo.language,
@@ -228,6 +226,4 @@ function onToggleStar(isStar: boolean) {
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

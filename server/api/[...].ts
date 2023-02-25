@@ -1,5 +1,5 @@
 import HttpProxy from "http-proxy";
-import { join } from "~~/shared/path";
+import { join } from "path";
 const proxy = HttpProxy.createProxy();
 export default defineEventHandler(async (event) => {
   // 只有传formData时event.node.res.addListener("close"会被触发。

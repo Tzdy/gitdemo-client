@@ -162,6 +162,7 @@ import { useRepo } from '@/store/repo'
 import { listRepoFile } from '~~/api/repo';
 import { RefType } from '~~/api/repo/listRepoRefDto';
 import { DirectoryItem } from '~~/components/base/Directory.vue';
+console.log('main')
 const repoStore = useRepo()
 const username = useRoute().params.username as string
 const reponame = useRoute().params.reponame as string
@@ -390,7 +391,7 @@ async function fetchRepoFileList() {
     }
 }
 
-useAsyncData(() => fetchRepoFileList())
+fetchRepoFileList()
 
 </script>
 
