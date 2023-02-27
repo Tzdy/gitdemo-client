@@ -178,8 +178,7 @@ async function fetchRepoFileList() {
         // response.data.list[0].
     }
 }
-
-fetchRepoFileList()
+await fetchRepoFileList()
 </script>
 
 <style scoped>

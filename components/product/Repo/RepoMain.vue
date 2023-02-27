@@ -1,6 +1,5 @@
 <template>
-    <div v-if="repoInfo"
-        class="Layout Layout--flowRow-until-md Layout--sidebarPosition-end Layout--sidebarPosition-flowRow-end">
+    <div class="Layout Layout--flowRow-until-md Layout--sidebarPosition-end Layout--sidebarPosition-flowRow-end">
         <!-- left -->
         <div class="Layout-main">
             <!-- select branch, clone repo -->
@@ -160,17 +159,17 @@ import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
 import { join } from '@/shared/path'
 import { useRepo } from '@/store/repo'
 import { listRepoFile } from '~~/api/repo';
+import { GetOneRepoResDto } from '~~/api/repo/getOneRepoDto';
 import { RefType } from '~~/api/repo/listRepoRefDto';
 import { DirectoryItem } from '~~/components/base/Directory.vue';
-console.log('main')
 const repoStore = useRepo()
 const username = useRoute().params.username as string
 const reponame = useRoute().params.reponame as string
 const path = useRoute().params.path as string[]
-const repoInfo = computed(() => repoStore.repoInfo)
+const repoInfo = useRepo().repoInfo as GetOneRepoResDto["data"]
 const branchList = computed(() => repoStore.repoRef.branchList.map(item => item.name))
 const tagList = computed(() => repoStore.repoRef.tagList.map(item => item.name))
-const latestCommit = computed(() => {
+function latestCommitInit() {
     if (!repoStore.latestCommit) {
         return null
     } else {
@@ -187,8 +186,8 @@ const latestCommit = computed(() => {
         }
         return commit
     }
-})
-
+}
+const latestCommit = latestCommitInit()
 // clone url
 const cloneHttpUrl = computed(() => join(useRuntimeConfig().public.gitBase, `${username}/${reponame}.git`))
 const cloneSSHUrl = computed(() => '')
@@ -204,11 +203,11 @@ function onSwitchTab(tabName: string) {
 
 // 语言分析
 const languageAnalysis = computed(() => {
-    if (repoInfo.value) {
-        const sumFile = repoInfo.value.languageAnalysis.reduce((a, b) => {
+    if (repoInfo) {
+        const sumFile = repoInfo.languageAnalysis.reduce((a, b) => {
             return a + b.fileNum
         }, 0)
-        return repoInfo.value.languageAnalysis.map(item => {
+        return repoInfo.languageAnalysis.map(item => {
             return {
                 name: item.language,
                 percentage: item.fileNum / sumFile
@@ -390,8 +389,8 @@ async function fetchRepoFileList() {
         // response.data.list[0].
     }
 }
-
-fetchRepoFileList()
+console.log('enter')
+await fetchRepoFileList()
 
 </script>
 
