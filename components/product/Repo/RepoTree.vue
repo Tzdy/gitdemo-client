@@ -81,85 +81,8 @@ function onSwitchTab(tabName: string) {
     }
 }
 
-// const repoInfo = ref({
-//     branch: 'master',
-//     type: 'Public',
-//     httpsUrl: 'https://github.com/swc-project/website.git',
-//     sshUrl: 'git@github.com:swc-project/website.git',
-//     isStar: false,
-//     isWatch: false,
-//     isOverview: false,
-//     starNum: 100,
-//     watchNum: 20,
-//     forkNum: 1,
-//     branchList: [
-//         'master',
-//         'dev'
-//     ],
-//     tagList: [
-//         'v1',
-//         'v2',
-//         'v3'
-//     ],
-//     selectType: 'branch' as 'branch' | 'tag',
-//     selectName: 'master',
-//     defaultName: 'master',
-//     defaultType: 'branch' as 'branch' | 'tag',
-//     latestCommit: {
-//         username: 'Tsdy',
-//         avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy',
-//         content: 'docs: make wording slightly clearer ',
-//         hash: '9ef270915996195f40def244a33845449f67dbe9',
-//         date: '2 hours ago'
-//     },
-//     commitNum: 2003,
-//     description: 'The Hybrid Vue(3) Framework.',
-//     link: 'https://v3.nuxtjs.org',
-//     topicTagList: ["framework", 'nuxt', 'vue'],
-//     license: 'MIT license',
-//     release: {
-//         latestRelease: {
-//             name: 'v3.0.0-rc.8',
-//             date: '8 days ago',
-//         },
-//         length: 8,
-//     },
-//     contributor: {
-//         topArray: [
-//             {
-//                 name: 'Tsdy',
-//                 avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy'
-//             },
-//             {
-//                 name: 'Cyc',
-//                 avatar: 'https://www.tsdy.club/git/manage/user/info/avatar/Tsdy'
-//             }
-//         ],
-//         length: 251,
-//     },
-//     languageList: [
-//         {
-//             name: 'javascript',
-//             percentage: 0.5,
-//         },
-//         {
-//             name: 'typescript',
-//             percentage: 0.2,
-//         },
-//         {
-//             name: 'vue',
-//             percentage: 0.2
-//         },
-//         {
-//             name: 'css',
-//             percentage: 0.1
-//         }
-//     ]
-// })
 const directory = ref<DirectoryItem[] | null>(null);
-console.log(path)
 async function fetchRepoFileList() {
-    console.log(path)
     const { response, errMessage } = await listRepoFile({
         branch: repoStore.refName,
         repoName: reponame,
@@ -175,14 +98,16 @@ async function fetchRepoFileList() {
                 latestCommitContent: item.commitContent,
             };
         });
-        // response.data.list[0].
+        directory.value.sort((a, b) => {
+            if (a.type === 'blob' && b.type === 'tree') {
+                return 1
+            } else if (a.type === 'tree' && b.type === 'blob') {
+                return -1
+            }
+            return a.name.localeCompare(b.name)
+
+        })
     }
 }
 await fetchRepoFileList()
 </script>
-
-<style scoped>
-.SelectMenu-list--borderless>.SelectMenu-item {
-    border-bottom: 0;
-}
-</style>
