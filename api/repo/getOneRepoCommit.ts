@@ -4,6 +4,7 @@ export class GetOneRepoCommitReqDto {
   repoName: string;
   branch: string;
   commitHash?: string;
+  path?: string;
 }
 class Data {
   username: string;

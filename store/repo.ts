@@ -43,7 +43,7 @@ export const useRepo = defineStore("repo", {
       }
     },
     // 获取最新commit，同时判断该分支存不存在。
-    async fetchLatestCommit(username: string, repoName: string) {
+    async fetchLatestCommit(username: string, repoName: string, path?: string) {
       if (!this.repoInfo?.defaultBranchName) {
         return;
       }
@@ -51,6 +51,7 @@ export const useRepo = defineStore("repo", {
         username,
         repoName,
         branch: this.refName,
+        path,
       });
       if (!errMessage) {
         this.latestCommit = response.data;

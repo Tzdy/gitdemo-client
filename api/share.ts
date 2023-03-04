@@ -14,6 +14,10 @@ export default async function clientRequest<DTO>(
         .join(",");
     } else if (error.value.statusCode === 401) {
       errMessage = response.message;
+      navigateTo({
+        name: "403",
+        replace: true,
+      });
     } else {
       errMessage = "server error.";
     }

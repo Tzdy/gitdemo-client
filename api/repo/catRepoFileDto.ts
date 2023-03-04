@@ -6,6 +6,7 @@ export class CatRepoFileReqDto {
   // 可以是分支名或commitHash
   branch: string;
   path: string;
+  raw?: number;
 }
 class Data {
   size: number;

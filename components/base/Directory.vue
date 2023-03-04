@@ -27,9 +27,8 @@
                             class="f6 Link--secondary text-mono ml-2 d-none d-lg-inline">
                             {{ latestCommit.hash.slice(0, 7) }}
                         </NuxtLink>
-                        <NuxtLink :to="`/${username}/${reponame}/commit/${latestCommit.hash}`"
-                            class="Link--secondary ml-2">
-                            {{ latestCommit.createTime }}
+                        <NuxtLink :to="`/${username}/${reponame}/commit/${latestCommit.hash}`" class="Link--secondary ml-2">
+                            {{ moment(latestCommit.createTime).fromNow() }}
                         </NuxtLink>
                     </div>
                 </div>
@@ -90,7 +89,7 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 import { join } from '~~/shared/path';
-
+import moment from 'moment'
 export interface LatestCommit {
     avatar: string
     content: string
