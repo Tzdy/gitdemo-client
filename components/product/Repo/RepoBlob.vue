@@ -26,6 +26,7 @@
 import { catRepoFile } from '~~/api/repo';
 import { useRepo } from '~~/store/repo';
 import '@/assets/css/highjs.css'
+import highjs from 'highlight.js/lib/common'
 const repoStore = useRepo();
 const username = useRoute().params.username as string;
 const reponame = useRoute().params.reponame as string;
@@ -43,7 +44,7 @@ async function fetchBlob() {
         path: path.join('/')
     })
     if (!errMessage) {
-        blobLine.value = response.data.value.split('\n')
+        blobLine.value = highjs.highlightAuto(response.data.value).value.split('\n')
         size.value = response.data.size
     }
 }

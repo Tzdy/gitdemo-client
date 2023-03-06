@@ -280,24 +280,24 @@ const navItems = reactive<UnderlineNavItem[]>([
         number: 18,
         replace: true,
     },
-    {
-        name: 'Projects',
-        query: 'projects',
-        icon: 'projects',
-        number: 0,
-    },
-    {
-        name: 'Packages',
-        query: 'packages',
-        icon: 'packages',
-        number: 0
-    },
-    {
-        name: 'Stars',
-        query: 'stars',
-        icon: 'star',
-        number: 0,
-    },
+    // {
+    //     name: 'Projects',
+    //     query: 'projects',
+    //     icon: 'projects',
+    //     number: 0,
+    // },
+    // {
+    //     name: 'Packages',
+    //     query: 'packages',
+    //     icon: 'packages',
+    //     number: 0
+    // },
+    // {
+    //     name: 'Stars',
+    //     query: 'stars',
+    //     icon: 'star',
+    //     number: 0,
+    // },
 ])
 
 </script>
