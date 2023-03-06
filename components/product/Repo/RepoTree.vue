@@ -32,14 +32,16 @@
 <script setup lang="ts">
 import { join } from "@/shared/path";
 import { useRepo } from "@/store/repo";
-import { listRepoFile } from "~~/api/repo";
+import { catRepoFile, listRepoFile } from "~~/api/repo";
 import { RefType } from "~~/api/repo/listRepoRefDto";
 import { DirectoryItem } from "~~/components/base/Directory.vue";
+import highjs from 'highlight.js/lib/common'
 const repoStore = useRepo();
 const username = useRoute().params.username as string;
 const reponame = useRoute().params.reponame as string;
 const path = useRoute().params.path as string[]
 const repoInfo = computed(() => repoStore.repoInfo);
+const refName = repoStore.refName
 const branchList = computed(() =>
     repoStore.repoRef.branchList.map((item) => item.name)
 );
@@ -82,6 +84,23 @@ function onSwitchTab(tabName: string) {
 }
 
 const directory = ref<DirectoryItem[] | null>(null);
+const readmeCodeLine = ref<string[]>([])
+const readmeRaw = ref('')
+const readmeSize = ref(0)
+
+async function fetchReadme() {
+    const { errMessage, response } = await catRepoFile({
+        username,
+        repoName: reponame,
+        branch: refName,
+        path: 'README.md'
+    })
+    if (!errMessage) {
+        readmeRaw.value = response.data.value
+        readmeCodeLine.value = highjs.highlightAuto(response.data.value).value.split('\n')
+        readmeSize.value = response.data.size
+    }
+}
 async function fetchRepoFileList() {
     const { response, errMessage } = await listRepoFile({
         branch: repoStore.refName,
@@ -98,6 +117,10 @@ async function fetchRepoFileList() {
                 latestCommitContent: item.commitContent,
             };
         });
+        const readme = directory.value.find(item => item.name.toLowerCase() === 'readme.md')
+        if (readme) {
+            fetchReadme()
+        }
         directory.value.sort((a, b) => {
             if (a.type === 'blob' && b.type === 'tree') {
                 return 1

@@ -25,7 +25,6 @@
 <script setup lang="ts">
 import { catRepoFile } from '~~/api/repo';
 import { useRepo } from '~~/store/repo';
-import '@/assets/css/highjs.css'
 import highjs from 'highlight.js/lib/common'
 const repoStore = useRepo();
 const username = useRoute().params.username as string;

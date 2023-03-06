@@ -47,6 +47,7 @@ import { join } from '@/shared/path'
 import { useAuth } from '~~/store/auth';
 import { formatRepoType } from '~~/shared/enumFormat'
 import { useRepo } from '~~/store/repo';
+import '@/assets/css/highjs.css'
 const authStore = useAuth()
 const username = useRoute().params.username as string
 const reponame = useRoute().params.reponame as string
