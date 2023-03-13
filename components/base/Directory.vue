@@ -6,14 +6,18 @@
             <div class="d-flex rounded-top-2 flex-items-center flex-wrap">
                 <!-- avatar -->
                 <div class="flex-shrink-0 ml-n1 mr-n1 mt-n1 mb-n1 hx_avatar_stack_commit">
-                    <img width="24" height="24" class="avatar circle" :src="latestCommit.avatar" alt="">
+                    <NuxtLink v-if="latestCommit.userId" class="text-bold color-fg-default mr-1"
+                            :to="`/${username}`">
+                            <img width="24" height="24" class="avatar circle" :src="latestCommit.avatar" alt=""></NuxtLink>
+                    <img v-else width="24" height="24" class="avatar circle" :src="latestCommit.avatar" alt="">
                 </div>
                 <!-- middle -->
                 <div class="flex-1 d-flex flex-items-center ml-3 min-width-0">
                     <div class="css-truncate css-truncate-overflow color-fg-muted">
-                        <NuxtLink class="text-bold color-fg-default mr-1"
+                        <NuxtLink v-if="latestCommit.userId" class="text-bold color-fg-default mr-1"
                             :to="`/${username}/${reponame}/commits?author=${latestCommit.username}`">
                             {{ latestCommit.username }}</NuxtLink>
+                        <span v-else class="text-bold color-fg-default mr-1">{{ latestCommit.username }}</span>
                         <NuxtLink class="d-none d-sm-inline color-fg-default"
                             :to="`/${username}/${reponame}/commit/${latestCommit.hash}`">
                             {{ latestCommit.content }}</NuxtLink>
@@ -96,6 +100,7 @@ export interface LatestCommit {
     hash: string
     username: string
     createTime: Date
+    userId?: number
 }
 
 export interface DirectoryItem {

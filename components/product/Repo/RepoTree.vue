@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { join } from "@/shared/path";
+import { avatarUrl, join } from "@/shared/path";
 import { useRepo } from "@/store/repo";
 import { catRepoFile, listRepoFile } from "~~/api/repo";
 import { RefType } from "~~/api/repo/listRepoRefDto";
@@ -54,16 +54,10 @@ const latestCommit = computed(() => {
     } else {
         const { createTime, ...res } = repoStore.latestCommit;
         const commit = {
-            avatar: "",
+            avatar: avatarUrl(res.userId),
             createTime: new Date(createTime),
             ...res,
         };
-        if (repoStore.latestCommit.userId) {
-            commit.avatar = join(
-                useRuntimeConfig().app.baseURL,
-                "/api/public/avatar?id=" + repoStore.latestCommit.userId
-            );
-        }
         return commit;
     }
 });

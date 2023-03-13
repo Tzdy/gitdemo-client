@@ -25,6 +25,14 @@ export function resolve(...argvs: string[]) {
   return `/${argvs.join("/")}`;
 }
 
+export function avatarUrl(userId?: number) {
+  if (typeof userId === 'number') {
+    return resolve(`/api/public/avatar?id=${userId}`)
+  } else {
+    return resolve('/api/public/avatar?id=-1')
+  }
+}
+
 export function gitHttpPath(username: string, repoName: string) {
   return join(useRuntimeConfig().public.gitBase, `${username}/${repoName}.git`);
 }

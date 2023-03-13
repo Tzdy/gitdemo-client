@@ -156,7 +156,7 @@
 <script setup lang="ts">
 import type { BreadcrumbItem } from '@/components/base/BreadCrumb.vue'
 import type { UnderlineNavItem } from '@/components/base/UnderlineNav.vue';
-import { join } from '@/shared/path'
+import { join, avatarUrl } from '@/shared/path'
 import { useRepo } from '@/store/repo'
 import { catRepoFile, listRepoFile } from '~~/api/repo';
 import { GetOneRepoResDto } from '~~/api/repo/getOneRepoDto';
@@ -177,14 +177,9 @@ function latestCommitInit() {
     } else {
         const { createTime, ...res } = repoStore.latestCommit
         const commit = {
-            avatar: '',
+            avatar: avatarUrl(res.userId),
             createTime: new Date(createTime),
             ...res
-        }
-        if (repoStore.latestCommit.userId) {
-            commit.avatar = join(useRuntimeConfig().app.baseURL,
-                "/api/public/avatar?id=" +
-                repoStore.latestCommit.userId)
         }
         return commit
     }
