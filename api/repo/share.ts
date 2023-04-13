@@ -6,6 +6,10 @@ export enum ToggleState {
   ACTIVE = 0,
   PASSIVE = 1,
 }
+export class Language {
+  color: string;
+  language: string;
+}
 export class RepoDto {
   id: number;
   type: RepoType;
@@ -20,5 +24,5 @@ export class RepoDto {
   updateTime: number;
 
   // 创建仓库时为空
-  language: string;
+  language: Language;
 }

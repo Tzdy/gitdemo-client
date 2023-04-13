@@ -21,9 +21,9 @@ import { join } from '~~/shared/path';
 
 export interface ProgressItem {
     name: string
+    color: string
     percentage: number
 }
-const { format } = useLanguage()
 
 const props = defineProps({
     items: {
@@ -36,7 +36,8 @@ const progress = ref(props.items.map(item => {
         // 搜索用名
         originName: item.name,
         percentage: item.percentage,
-        ...format(item.name),
+        name: item.name,
+        color: item.color
     }
 }))
 function progressStyle(item: ProgressItem & { color: string }) {
@@ -46,7 +47,7 @@ function progressStyle(item: ProgressItem & { color: string }) {
     }
 }
 function formatPercentage(percentage: number) {
-    return (percentage * 100).toFixed(0) + '%'
+    return (percentage * 100).toFixed(2) + '%'
 }
 </script>
 

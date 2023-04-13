@@ -206,7 +206,8 @@ const languageAnalysis = computed(() => {
         }, 0)
         return repoInfo.languageAnalysis.map(item => {
             return {
-                name: item.language,
+                name: item.language.language,
+                color: item.language.color,
                 percentage: item.fileNum / sumFile
             }
         })

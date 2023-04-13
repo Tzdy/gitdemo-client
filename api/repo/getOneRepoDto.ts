@@ -1,8 +1,8 @@
 import { HttpResponse } from '../HttpResponse';
-import { RepoDto, RepoType } from './share';
+import { Language, RepoDto, RepoType } from './share';
 class LanguageItem {
   languageId: number;
-  language: string;
+  language: Language;
   fileNum: number;
 }
 export class GetOneRepoReqDto {

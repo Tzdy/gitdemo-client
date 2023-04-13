@@ -46,7 +46,7 @@
                         {{ repo.about }}
                     </p>
                     <div class="f6 color-fg-muted mt-2">
-                        <BaseLanguage v-if="repo.language" class="d-inline-block mr-3" :language="repo.language" />
+                        <BaseLanguage v-if="repo.language" class="d-inline-block mr-3" :color="repo.language.color" :language="repo.language.language" />
                         <NuxtLink v-show="repo.starNum" :to="join(username, repo.repoName, 'stargazers')"
                             class="Link--muted mr-3 no-wrap">
                             <BaseSvgIcon name="star" :size="16" class="octicon mr-1" />
@@ -92,7 +92,10 @@ interface RepoInfo {
     repoName: string;
     type: 'Public' | 'Private',
     about: string,
-    language: string,
+    language: {
+        color: string,
+        language: string
+    },
     updatedTime: number,
     starNum: number,
     forkNum: number,

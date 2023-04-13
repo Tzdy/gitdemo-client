@@ -1,24 +1,18 @@
 <template>
     <span class="d-inline-block">
         <span class="repo-language-color mr-1"
-            :style="{ backgroundColor: languageColor[language] ? languageColor[language] : languageColor['Other'] }"></span>
+            :style="{ backgroundColor: color }"></span>
         <span>{{ language }}</span>
     </span>
 </template>
 
 <script setup lang="ts">
-const languageColor: Record<string, string | undefined> = {
-    JavaScript: '#f1e05a',
-    HTML: '#e34c26',
-    TypeScript: '#3178c6',
-    Go: '#00ADD8',
-    Css: '#563d7c',
-    Vue: '#41b883',
-    PHP: '#4F5D95',
-    Other: "#563d7c",
-}
+
 defineProps({
     language: {
+        type: String,
+    },
+    color: {
         type: String,
     }
 })
